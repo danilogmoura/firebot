@@ -16,16 +16,16 @@ namespace FireBot.Bot.Automation.Library
             yield return Buttons.Notification.Click();
             LogManager.SubHeader("Firestone Research");
 
-            if (!ResearchPanel.SubmenusWrapper.IsActiveSelf() && ResearchPanel.SelectResearch.IsActiveSelf())
+            if (!Panel.SubmenusWrapper.IsActiveSelf() && Panel.SelectResearch.IsActiveSelf())
                 yield break;
 
-            if (ResearchPanel.Slot0.IsActiveSelf() && Buttons.ButtonClainSlot0.IsActiveSelf())
+            if (Panel.Slot0.IsActiveSelf() && Buttons.ButtonClainSlot0.IsActiveSelf())
                 yield return Buttons.ButtonClainSlot0.Click();
 
-            if (ResearchPanel.Slot1.IsActiveSelf() && Buttons.ButtonClainSlot1.IsActiveSelf())
+            if (Panel.Slot1.IsActiveSelf() && Buttons.ButtonClainSlot1.IsActiveSelf())
                 yield return Buttons.ButtonClainSlot1.Click();
 
-            var submenusTransform = ResearchPanel.SubmenusWrapper.Transform;
+            var submenusTransform = Panel.SubmenusWrapper.Transform;
 
             for (var i = 0; i < submenusTransform.childCount; i++)
             {
@@ -35,10 +35,10 @@ namespace FireBot.Bot.Automation.Library
                 for (var j = 0; j < tree.childCount; j++)
                 {
                     var slot = new ResearchSlotWrapper(tree.GetChild(j));
-                    if (!slot.IsValid() || !ResearchPanel.SelectResearch.IsActiveSelf()) continue;
+                    if (!slot.IsValid() || !Panel.SelectResearch.IsActiveSelf()) continue;
                     yield return OpenPopup(JoinPath(SubmenusTree, tree.name, slot.Name));
 
-                    if (ResearchPanel.SubmenusWrapper.IsActiveSelf() && Buttons.StartResearch.IsInteractable())
+                    if (Panel.SubmenusWrapper.IsActiveSelf() && Buttons.StartResearch.IsInteractable())
                         yield return Buttons.StartResearch.Click();
                 }
             }
@@ -81,7 +81,7 @@ namespace FireBot.Bot.Automation.Library
             }
         }
 
-        private static class ResearchPanel
+        private static class Panel
         {
             public static ObjectWrapper SubmenusWrapper => new ObjectWrapper(SubmenusTree);
 
