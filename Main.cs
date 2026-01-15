@@ -6,7 +6,6 @@ using FireBot.Bot.Automation.Mission;
 using FireBot.Utils;
 using MelonLoader;
 using UnityEngine;
-// Necessário para DateTime
 
 namespace FireBot
 {

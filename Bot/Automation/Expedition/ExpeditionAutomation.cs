@@ -17,21 +17,20 @@ namespace FireBot.Bot.Automation.Expedition
             LogManager.SubHeader("Processando Expedition");
             yield return Buttons.Notification.Click();
 
-            if (Expeditions.CurrentExpedition.IsActive() && Expeditions.CurrentExpedition.IsCompleted())
+            if (Expeditions.CurrentExpedition.IsActive() && CurrentExpedition.IsCompleted())
             {
-                yield return Expeditions.CurrentExpedition.CollectRewards();
+                yield return CurrentExpedition.CollectRewards();
             }
 
             if (Expeditions.CurrentExpedition.Inactive() && Expeditions.PendingExpedition.IsActive())
             {
-                yield return Expeditions.PendingExpedition.StartExpedition();
+                yield return PendingExpedition.StartExpedition();
             }
 
             {
                 yield return Buttons.Close.Click();
             }
         }
-
 
         private static class Buttons
         {
@@ -56,13 +55,13 @@ namespace FireBot.Bot.Automation.Expedition
 
             private static ButtonWrapper ClaimButton => new ButtonWrapper(CurrenteExpedition, "claimButton");
 
-            public bool IsCompleted()
+            public static bool IsCompleted()
             {
                 var text = TimeLabel.GetParsedText();
                 return text.Contains("Completed");
             }
 
-            public IEnumerator CollectRewards()
+            public static IEnumerator CollectRewards()
             {
                 if (ClaimButton.IsInteractable())
                 {
@@ -77,9 +76,10 @@ namespace FireBot.Bot.Automation.Expedition
             {
             }
 
-            private static ButtonWrapper StartButton => new ButtonWrapper(Paths.Expedition.PendingExpedition, "startButton");
+            private static ButtonWrapper StartButton =>
+                new ButtonWrapper(Paths.Expedition.PendingExpedition, "startButton");
 
-            public IEnumerator StartExpedition()
+            public static IEnumerator StartExpedition()
             {
                 if (StartButton.IsInteractable())
                 {
