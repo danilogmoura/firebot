@@ -27,7 +27,7 @@ namespace FireBot.Bot.Automation.Expedition
         private static class Buttons
         {
             public static ButtonWrapper Notification => new ButtonWrapper(ExpeditionNotification);
-            public static ButtonWrapper Close => new ButtonWrapper(ExpeditionCloseButton);
+            public static ButtonWrapper Close => new ButtonWrapper(CloseButton);
         }
 
         private static class Expeditions
@@ -38,16 +38,16 @@ namespace FireBot.Bot.Automation.Expedition
 
         private class CurrentExpeditionSection : ObjectWrapper
         {
-            public CurrentExpeditionSection() : base(CurrenteExpedition)
+            public CurrentExpeditionSection() : base(CurrentExpedition)
             {
             }
 
-            private ButtonWrapper ClaimButton => new ButtonWrapper(JoinPath(CurrenteExpedition, "claimButton"));
+            private ButtonWrapper ClaimButton => new ButtonWrapper(JoinPath(CurrentExpedition, "claimButton"));
 
             public bool IsCompleted()
             {
                 var timeLabel =
-                    new TextMeshProUGUIWrapper(JoinPath(CurrenteExpedition, "expeditionProgressBg/timeLeftText"));
+                    new TextMeshProUGUIWrapper(JoinPath(CurrentExpedition, "expeditionProgressBg/timeLeftText"));
 
                 if (!IsActiveSelf() && !timeLabel.Exists()) return false;
 

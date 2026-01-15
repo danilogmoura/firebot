@@ -58,12 +58,12 @@
 
             public const string ExpeditionsParents = Popups + "/Expeditions/bg/expeditionsParent";
 
-            public const string CurrenteExpedition = ExpeditionsParents + "/activeExpeditionParent/activeExpedition";
+            public const string CurrentExpedition = ExpeditionsParents + "/activeExpeditionParent/activeExpedition";
 
             public const string PendingExpedition =
                 ExpeditionsParents + "/pendingExpeditionsParent/expeditionsScroll/Viewport/grid/expeditionPending0";
 
-            public const string ExpeditionCloseButton = Popups + "/Expeditions/bg/closeButton";
+            public const string CloseButton = Popups + "/Expeditions/bg/closeButton";
         }
 
         internal static class FirestoneResearch
@@ -84,6 +84,15 @@
 
             public const string PopupActivateButton =
                 Popups + "/FirestoneResearchPreview/bg/innerBg/unlocked/buttonHolder/researchActivateButton";
+        }
+
+        internal static class OracleRituals
+        {
+            public const string Notification = NotificationsGrid + "/OracleRituals";
+
+            public const string CloseButton = Menus + "/Oracle/closeButton";
+
+            public const string RitualSubmenu = Menus + "/Oracle/submenus/bg/ritualSubmenu";
         }
     }
 }
