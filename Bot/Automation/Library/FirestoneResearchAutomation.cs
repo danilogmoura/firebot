@@ -83,21 +83,21 @@ namespace FireBot.Bot.Automation.Library
 
         private static class ResearchPanel
         {
-            public static readonly ObjectWrapper SubmenusWrapper = new ObjectWrapper(SubmenusTree);
+            public static ObjectWrapper SubmenusWrapper => new ObjectWrapper(SubmenusTree);
 
-            public static readonly ObjectWrapper Slot0 = new ObjectWrapper(ResearchPanelDown + "/researchSlot0");
+            public static ObjectWrapper Slot0 => new ObjectWrapper(ResearchPanelDown + "/researchSlot0");
 
-            public static readonly ObjectWrapper Slot1 = new ObjectWrapper(ResearchPanelDown + "/researchSlot1");
+            public static ObjectWrapper Slot1 => new ObjectWrapper(ResearchPanelDown + "/researchSlot1");
 
-            public static readonly ObjectWrapper SelectResearch = new ObjectWrapper(SelectResearchTable);
+            public static ObjectWrapper SelectResearch => new ObjectWrapper(SelectResearchTable);
         }
 
         private static class Buttons
         {
-            public static readonly ButtonWrapper ButtonClainSlot0 =
+            public static ButtonWrapper ButtonClainSlot0 =>
                 new ButtonWrapper(JoinPath(ResearchPanelDown, "researchSlot0/container/claimButton"));
 
-            public static readonly ButtonWrapper ButtonClainSlot1 =
+            public static ButtonWrapper ButtonClainSlot1 =>
                 new ButtonWrapper(JoinPath(ResearchPanelDown, "researchSlot1/container/claimButton"));
 
             public static ButtonWrapper Notification => new ButtonWrapper(Paths.FirestoneResearch.Notification);
