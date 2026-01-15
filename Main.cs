@@ -11,7 +11,7 @@ namespace FireBot
 {
     public static class BuildInfo
     {
-        public const string Name = "Fire Bot";
+        public const string Name = "FireBot";
         public const string Description = "";
         public const string Author = "danilogmoura";
         public const string Company = null;
