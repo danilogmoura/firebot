@@ -48,7 +48,7 @@
         <Compile Include="Bot\Component\TextMeshProWrapper.cs" />
         <Compile Include="Bot\Component\ButtonWrapper.cs" />
         <Compile Include="Bot\Component\MappedObjectBase.cs" />
-        <Compile Include="Bot\Component\TextMeshProWrapperUGUI.cs" />
+        <Compile Include="Bot\Component\TextMeshProUGUIWrapper.cs" />
         <Compile Include="Bot\Component\TimeDisplay.cs" />
         <Compile Include="Main.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />

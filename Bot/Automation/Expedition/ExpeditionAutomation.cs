@@ -43,8 +43,8 @@ namespace FireBot.Bot.Automation.Expedition
             {
             }
 
-            private static TextMeshProWrapperUGUI TimeLabel =>
-                new TextMeshProWrapperUGUI(CurrenteExpedition, "expeditionProgressBg/timeLeftText");
+            private static TextMeshProUGUIWrapper TimeLabel =>
+                new TextMeshProUGUIWrapper(CurrenteExpedition, "expeditionProgressBg/timeLeftText");
 
             private static ButtonWrapper ClaimButton => new ButtonWrapper(CurrenteExpedition, "claimButton");
 

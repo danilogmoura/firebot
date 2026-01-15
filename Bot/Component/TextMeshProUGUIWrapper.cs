@@ -2,9 +2,9 @@
 
 namespace FireBot.Bot.Component
 {
-    internal class TextMeshProWrapperUGUI : ComponentWrapper<TextMeshProUGUI>
+    internal class TextMeshProUGUIWrapper : ComponentWrapper<TextMeshProUGUI>
     {
-        public TextMeshProWrapperUGUI(params string[] path) : base(string.Join("/", path))
+        public TextMeshProUGUIWrapper(params string[] path) : base(string.Join("/", path))
         {
         }
 

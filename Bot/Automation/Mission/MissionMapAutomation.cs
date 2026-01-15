@@ -46,7 +46,7 @@ namespace FireBot.Bot.Automation.Mission
 
         private static int GetSquadCount()
         {
-            return new SquadsCountWrapper().Current;
+            return new SquadsCountUGUIWrapper().Current;
         }
 
         private static void UpdateMissionCache()
@@ -108,9 +108,9 @@ namespace FireBot.Bot.Automation.Mission
             }
         }
 
-        private class SquadsCountWrapper : TextMeshProWrapperUGUI
+        private class SquadsCountUGUIWrapper : TextMeshProUGUIWrapper
         {
-            public SquadsCountWrapper() : base(SquadsQuantity)
+            public SquadsCountUGUIWrapper() : base(SquadsQuantity)
             {
             }
 
