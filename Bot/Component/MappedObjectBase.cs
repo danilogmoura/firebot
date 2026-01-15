@@ -5,38 +5,49 @@ namespace FireBot.Bot.Component
 {
     internal abstract class MappedObjectBase
     {
-        private readonly string _cachedPath;
+        private readonly string _path;
+        private Transform _cachedTransform;
 
         protected MappedObjectBase(string path)
         {
-            _cachedPath = path;
-            Transform();
+            _path = path;
         }
 
-        protected Transform CachedTransform { get; private set; }
-
-        private static UnityGameObject GameObject(string path)
+        protected Transform CachedTransform
         {
-            return UnityGameObject.Find(path);
+            get
+            {
+                if (_cachedTransform != null) return _cachedTransform;
+
+                FindAndCacheTransform();
+                return _cachedTransform;
+            }
         }
 
-        private void Transform()
+        private void FindAndCacheTransform()
         {
-            var rootPath = RootPath(_cachedPath);
-            var gameObject = GameObject(rootPath);
-            if (gameObject == null)
+            if (string.IsNullOrEmpty(_path)) return;
+
+            var firstSlashIndex = _path.IndexOf('/');
+
+            UnityGameObject rootObj;
+            Transform targetTrans = null;
+
+            if (firstSlashIndex == -1)
             {
-                return;
+                rootObj = UnityGameObject.Find(_path);
+                if (rootObj != null) targetTrans = rootObj.transform;
+            }
+            else
+            {
+                var rootName = _path.Substring(0, firstSlashIndex);
+                var childPath = _path.Substring(firstSlashIndex + 1);
+
+                rootObj = UnityGameObject.Find(rootName);
+                if (rootObj != null) targetTrans = rootObj.transform.Find(childPath);
             }
 
-            var childPath = ChildPath(_cachedPath);
-            if (childPath == null)
-            {
-                return;
-            }
-
-            var transform = gameObject.transform.Find(childPath);
-            CachedTransform = !transform ? null : transform;
+            _cachedTransform = targetTrans;
         }
 
         public bool Exists()
@@ -44,30 +55,14 @@ namespace FireBot.Bot.Component
             return CachedTransform != null;
         }
 
-        public bool IsNull()
-        {
-            return !Exists();
-        }
-
         public bool IsActive()
         {
-            return !IsNull() && CachedTransform.gameObject.active;
+            return CachedTransform?.gameObject.activeInHierarchy ?? false;
         }
 
-        public bool Inactive()
+        public bool IsActiveSelf()
         {
-            return !IsActive();
-        }
-
-        private static string RootPath(string path)
-        {
-            return path.Split('/')[0];
-        }
-
-        private static string ChildPath(string path)
-        {
-            var rootPath = RootPath(path);
-            return path.Length <= rootPath.Length ? null : path.Substring(rootPath.Length + 1);
+            return CachedTransform?.gameObject.activeSelf ?? false;
         }
     }
 }

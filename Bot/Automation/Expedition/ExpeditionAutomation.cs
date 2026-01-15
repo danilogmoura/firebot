@@ -9,23 +9,16 @@ namespace FireBot.Bot.Automation.Expedition
     {
         public static IEnumerator Process()
         {
-            if (Buttons.Notification.Inactive())
-            {
-                yield break;
-            }
+            if (!Buttons.Notification.IsActive()) yield break;
 
             LogManager.SubHeader("Expedition");
             yield return Buttons.Notification.Click();
 
             if (Expeditions.CurrentExpedition.IsActive() && CurrentExpedition.IsCompleted())
-            {
                 yield return CurrentExpedition.CollectRewards();
-            }
 
-            if (Expeditions.CurrentExpedition.Inactive() && Expeditions.PendingExpedition.IsActive())
-            {
+            if (!Expeditions.CurrentExpedition.IsActive() && Expeditions.PendingExpedition.IsActive())
                 yield return PendingExpedition.StartExpedition();
-            }
 
             {
                 yield return Buttons.Close.Click();
@@ -63,10 +56,7 @@ namespace FireBot.Bot.Automation.Expedition
 
             public static IEnumerator CollectRewards()
             {
-                if (ClaimButton.IsInteractable())
-                {
-                    yield return ClaimButton.Click();
-                }
+                if (ClaimButton.IsInteractable()) yield return ClaimButton.Click();
             }
         }
 
@@ -81,10 +71,7 @@ namespace FireBot.Bot.Automation.Expedition
 
             public static IEnumerator StartExpedition()
             {
-                if (StartButton.IsInteractable())
-                {
-                    yield return StartButton.Click();
-                }
+                if (StartButton.IsInteractable()) yield return StartButton.Click();
             }
         }
     }

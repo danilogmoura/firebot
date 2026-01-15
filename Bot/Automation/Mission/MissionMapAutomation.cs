@@ -15,10 +15,7 @@ namespace FireBot.Bot.Automation.Mission
 
         public static IEnumerator Process()
         {
-            if (Buttons.Notification.Inactive())
-            {
-                yield break;
-            }
+            if (!Buttons.Notification.IsActive()) yield break;
 
             yield return Buttons.Notification.Click();
 
@@ -59,10 +56,7 @@ namespace FireBot.Bot.Automation.Mission
             var missionsContainer = new ObjectWrapper(MissionRegion);
             var regionsRoot = missionsContainer.Transform;
 
-            if (regionsRoot == null)
-            {
-                return;
-            }
+            if (regionsRoot == null) return;
 
             for (var i = 0; i < regionsRoot.childCount; i++)
             {
@@ -71,10 +65,7 @@ namespace FireBot.Bot.Automation.Mission
                 for (var j = 0; j < region.childCount; j++)
                 {
                     var mission = region.GetChild(j);
-                    if (!mission.gameObject.activeInHierarchy)
-                    {
-                        continue;
-                    }
+                    if (!mission.gameObject.activeInHierarchy) continue;
 
                     _missionCache.Add(new Mission(region.name, mission.name));
                 }
@@ -131,17 +122,11 @@ namespace FireBot.Bot.Automation.Mission
             {
                 var text = GetParsedText();
 
-                if (string.IsNullOrWhiteSpace(text))
-                {
-                    return (0, 0);
-                }
+                if (string.IsNullOrWhiteSpace(text)) return (0, 0);
 
                 var parts = text.Trim().Split('/');
 
-                if (parts.Length != 2)
-                {
-                    return (0, 0);
-                }
+                if (parts.Length != 2) return (0, 0);
 
                 int.TryParse(parts[0], out var curr);
                 int.TryParse(parts[1], out var tot);

@@ -10,10 +10,7 @@ namespace FireBot.Bot.Automation.Enginneer
         public static IEnumerator Process()
         {
             var componentNotification = new ButtonWrapper(GridWarfrontCampaign);
-            if (componentNotification.Inactive())
-            {
-                yield break;
-            }
+            if (!componentNotification.IsActive()) yield break;
 
             LogManager.SubHeader("Warfront Campaign Scrolls");
             yield return componentNotification.Click();
@@ -21,10 +18,7 @@ namespace FireBot.Bot.Automation.Enginneer
             var claimToolsButton = new ButtonWrapper(ClaimToolsButton);
             var closeButton = new ButtonWrapper(CloseButton);
 
-            if (claimToolsButton.IsInteractable())
-            {
-                yield return claimToolsButton.Click();
-            }
+            if (claimToolsButton.IsInteractable()) yield return claimToolsButton.Click();
 
             yield return closeButton.Click();
         }

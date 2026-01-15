@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using static FireBot.Utils.BotConstants;
 
 namespace FireBot.Bot.Component
 {
@@ -10,27 +11,21 @@ namespace FireBot.Bot.Component
         {
         }
 
-        public IEnumerator Click(float delay = 0.5f)
-        {
-            ComponentCached?.onClick.Invoke();
-            yield return new WaitForSeconds(delay);
-        }
-
         public bool IsInteractable()
         {
-            return IsActive() && ComponentCached.interactable;
+            return IsActive()
+                   && (ComponentCached?.enabled ?? false)
+                   && (ComponentCached?.interactable ?? false);
         }
 
-        public bool IsNotInteractable()
+        public IEnumerator Click(float delay = InteractionDelay)
         {
-            return !IsInteractable();
-        }
+            if (!IsInteractable()) yield break;
 
-        public bool IsClickable()
-        {
-            return ComponentCached.gameObject.activeInHierarchy
-                   && ComponentCached.enabled
-                   && ComponentCached.interactable;
+            ComponentCached.Select();
+            ComponentCached.onClick.Invoke();
+
+            if (delay > 0) yield return new WaitForSeconds(delay);
         }
     }
 }

@@ -60,5 +60,26 @@
             public const string PendingExpedition =
                 "menusRoot/menuCanvasParent/SafeArea/menuCanvas/popups/Expeditions/bg/expeditionsParent/pendingExpeditionsParent/expeditionsScroll/Viewport/grid/expeditionPending0";
         }
+
+        internal static class FirestoneResearch
+        {
+            public const string Notification =
+                "battleRoot/battleMain/battleCanvas/SafeArea/leftSideUI/notifications/Viewport/grid/FirestoneResearch";
+
+            public const string MissionCloseButton =
+                "menusRoot/menuCanvasParent/SafeArea/menuCanvas/menus/Library/closeButton";
+
+            public const string ResearchPanelDown =
+                "menusRoot/menuCanvasParent/SafeArea/menuCanvas/menus/Library/submenus/firestoneResearch/researchPanel";
+
+            public const string SubmenusTree =
+                "menusRoot/menuCanvasParent/SafeArea/menuCanvas/menus/Library/submenus/firestoneResearch/researchScrollView/viewport/content/submenus";
+
+            public const string PopupActivateButton =
+                "menusRoot/menuCanvasParent/SafeArea/menuCanvas/popups/FirestoneResearchPreview/bg/innerBg/unlocked/buttonHolder/researchActivateButton";
+
+            public const string SelectResearchTable =
+                "menusRoot/menuCanvasParent/SafeArea/menuCanvas/menus/Library/submenus/firestoneResearch/researchPanel/selectResearchTable";
+        }
     }
 }

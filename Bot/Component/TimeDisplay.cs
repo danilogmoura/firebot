@@ -13,10 +13,7 @@ namespace FireBot.Bot.Component
         {
             var timeString = GetParsedText();
 
-            if (string.IsNullOrEmpty(timeString))
-            {
-                return 0;
-            }
+            if (string.IsNullOrEmpty(timeString)) return 0;
 
             try
             {
@@ -33,9 +30,7 @@ namespace FireBot.Bot.Component
                     case 2:
                     {
                         if (int.TryParse(parts[0], out var minutes) && int.TryParse(parts[1], out var seconds))
-                        {
                             totalSeconds = minutes * 60 + seconds;
-                        }
 
                         break;
                     }
@@ -44,9 +39,7 @@ namespace FireBot.Bot.Component
                         if (int.TryParse(parts[0], out var hours) &&
                             int.TryParse(parts[1], out var minutes) &&
                             int.TryParse(parts[2], out var seconds))
-                        {
                             totalSeconds = hours * 3600 + minutes * 60 + seconds;
-                        }
 
                         break;
                     }

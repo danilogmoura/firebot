@@ -1,5 +1,3 @@
-// Necessário para IEnumerator
-
 using System.Collections;
 using FireBot.Bot.Component;
 using FireBot.Utils;
@@ -12,20 +10,14 @@ namespace FireBot.Bot.Automation.Enginneer
         public static IEnumerator Process()
         {
             var engineerNotif = new ButtonWrapper(GridNotification);
-            if (engineerNotif.Inactive())
-            {
-                yield break;
-            }
+            if (!engineerNotif.IsActive()) yield break;
 
             LogManager.SubHeader("Tools Production");
             yield return engineerNotif.Click();
 
             var caimToolsButton = new ButtonWrapper(ClaimToolsButton);
 
-            if (caimToolsButton.IsInteractable())
-            {
-                yield return caimToolsButton.Click();
-            }
+            if (caimToolsButton.IsInteractable()) yield return caimToolsButton.Click();
 
             var closeButton = new ButtonWrapper(CloseButton);
             yield return closeButton.Click();
