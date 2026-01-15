@@ -17,7 +17,7 @@ namespace FireBot.Bot.Automation.Enginneer
                 yield break;
             }
 
-            LogManager.SubHeader("Processando Tools Production");
+            LogManager.SubHeader("Tools Production");
             yield return engineerNotif.Click();
 
             var caimToolsButton = new ButtonWrapper(ClaimToolsButton);

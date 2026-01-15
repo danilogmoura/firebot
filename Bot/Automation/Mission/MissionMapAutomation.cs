@@ -31,7 +31,7 @@ namespace FireBot.Bot.Automation.Mission
                 yield break;
             }
 
-            LogManager.SubHeader("Processando Mission Map");
+            LogManager.SubHeader("Missions");
 
             foreach (var mission in _missionCache.Where(mission => mission.IsActive && mission.IsClaim))
                 yield return mission.Click();

@@ -14,7 +14,7 @@ namespace FireBot.Bot.Automation.Expedition
                 yield break;
             }
 
-            LogManager.SubHeader("Processando Expedition");
+            LogManager.SubHeader("Expedition");
             yield return Buttons.Notification.Click();
 
             if (Expeditions.CurrentExpedition.IsActive() && CurrentExpedition.IsCompleted())

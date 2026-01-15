@@ -15,7 +15,7 @@ namespace FireBot.Bot.Automation.Enginneer
                 yield break;
             }
 
-            LogManager.SubHeader("Processando Warfront Campaign");
+            LogManager.SubHeader("Warfront Campaign Scrolls");
             yield return componentNotification.Click();
 
             var claimToolsButton = new ButtonWrapper(ClaimToolsButton);

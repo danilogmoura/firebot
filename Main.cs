@@ -44,14 +44,14 @@ namespace FireBot
             {
                 _nextExecutionTime = DateTime.Now.AddSeconds(MissionLogIntervalSeconds);
 
-                LogManager.Info($"Executando automação baseada em horário: {DateTime.Now:HH:mm:ss}");
+                LogManager.Info($"Executing time-base automation: {DateTime.Now:HH:mm:ss}");
                 MelonCoroutines.Start(RunAllSequentially());
             }
         }
 
         private static IEnumerator RunAllSequentially()
         {
-            LogManager.Header("Iniciando automações");
+            LogManager.Header("Starting automations");
 
             yield return ToolsProductionAutomation.Process();
             yield return WarfrontCampaignAtomation.Process();
