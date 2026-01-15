@@ -8,9 +8,18 @@ namespace FireBot.Bot.Component
         {
         }
 
+        public string Text => ComponentCached?.text ?? string.Empty;
+
         public string GetParsedText()
         {
-            return ComponentCached != null ? ComponentCached.GetParsedText() : string.Empty;
+            if (!IsActive() || ComponentCached == null) return string.Empty;
+
+            return ComponentCached.GetParsedText();
+        }
+
+        public bool Contains(string textToCheck)
+        {
+            return !string.IsNullOrEmpty(Text) && Text.ToLower().Contains(textToCheck.ToLower());
         }
     }
 }

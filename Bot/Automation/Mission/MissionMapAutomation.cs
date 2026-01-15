@@ -72,7 +72,7 @@ namespace FireBot.Bot.Automation.Mission
             }
         }
 
-        private sealed class Mission
+        private readonly struct Mission
         {
             private readonly SpriteRendererWrapper _activeIconWrapper;
             private readonly SpriteRendererWrapper _completedTickWrapper;

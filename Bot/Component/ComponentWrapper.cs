@@ -2,11 +2,27 @@
 {
     internal abstract class ComponentWrapper<T> : MappedObjectBase where T : UnityEngine.Component
     {
+        private T _componentCached;
+
         protected ComponentWrapper(string path) : base(path)
         {
-            ComponentCached = CachedTransform?.GetComponent<T>();
         }
 
-        protected T ComponentCached { get; private set; }
+        protected T ComponentCached
+        {
+            get
+            {
+                if (_componentCached != null && (object)_componentCached != null) return _componentCached;
+
+                if (CachedTransform != null) _componentCached = CachedTransform.GetComponent<T>();
+
+                return _componentCached;
+            }
+        }
+
+        public bool HasComponent()
+        {
+            return ComponentCached != null;
+        }
     }
 }
