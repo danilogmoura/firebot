@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using FireBot.Bot.Component;
 using FireBot.Utils;
-using static FireBot.Bot.Paths.WarfrontCampaign;
+using static FireBot.Utils.Paths.WarfrontCampaign;
 
 namespace FireBot.Bot.Automation.Enginneer
 {

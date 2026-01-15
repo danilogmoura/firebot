@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using FireBot.Bot.Component;
 using FireBot.Utils;
-using static FireBot.Bot.Paths.Expedition;
+using static FireBot.Utils.Paths.Expedition;
 
 namespace FireBot.Bot.Automation.Expedition
 {

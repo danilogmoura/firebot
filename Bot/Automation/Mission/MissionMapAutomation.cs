@@ -4,7 +4,7 @@ using System.Linq;
 using FireBot.Bot.Component;
 using FireBot.Utils;
 using UnityEngine;
-using static FireBot.Bot.Paths.Missions;
+using static FireBot.Utils.Paths.Missions;
 
 namespace FireBot.Bot.Automation.Mission
 {

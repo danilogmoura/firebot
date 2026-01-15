@@ -3,7 +3,7 @@
 using System.Collections;
 using FireBot.Bot.Component;
 using FireBot.Utils;
-using static FireBot.Bot.Paths.Engineer;
+using static FireBot.Utils.Paths.Engineer;
 
 namespace FireBot.Bot.Automation.Enginneer
 {

@@ -1,4 +1,4 @@
-﻿namespace FireBot.Bot
+﻿namespace FireBot.Utils
 {
     public abstract class Paths
     {
