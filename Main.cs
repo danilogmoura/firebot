@@ -3,6 +3,7 @@ using System.Collections;
 using FireBot.Bot.Automation.Enginneer;
 using FireBot.Bot.Automation.Expedition;
 using FireBot.Bot.Automation.Library;
+using FireBot.Bot.Automation.Main;
 using FireBot.Bot.Automation.Mission;
 using FireBot.Bot.Automation.Oracle;
 using FireBot.Utils;
@@ -50,6 +51,7 @@ namespace FireBot
         {
             LogManager.Header($"Starting automations - {DateTime.Now:HH:mm:ss}");
 
+            yield return OfflineProgress.Process();
             yield return ToolsProductionAutomation.Process();
             yield return WarfrontCampaignAtomation.Process();
             yield return MissionMapAutomation.Process();
