@@ -7,6 +7,7 @@ using FireBot.Bot.Automation.MagicQuarters;
 using FireBot.Bot.Automation.Main;
 using FireBot.Bot.Automation.Mission;
 using FireBot.Bot.Automation.Oracle;
+using FireBot.Config;
 using FireBot.Utils;
 using MelonLoader;
 using UnityEngine;
@@ -24,43 +25,54 @@ namespace FireBot
 
     public class Main : MelonMod
     {
-        private const double MissionLogIntervalSeconds = 60;
+        private const float MissionLogIntervalSeconds = 60f;
+        private bool _isBotRunning;
+        private float _timer;
 
-        private DateTime _nextExecutionTime;
-
-        private bool _showMenu;
+        public override void OnInitializeMelon()
+        {
+            BotSettings.Initialize();
+        }
 
         public override void OnLateInitializeMelon()
         {
             LogManager.Initialize(LoggerInstance);
-            _nextExecutionTime = DateTime.Now.AddSeconds(MissionLogIntervalSeconds);
+            _timer = MissionLogIntervalSeconds;
         }
 
         public override void OnUpdate()
         {
-            if (Input.GetKeyDown(KeyCode.F1)) _showMenu = !_showMenu;
+            if (!BotSettings.IsBotEnabled.Value) return;
 
-            if (DateTime.Now >= _nextExecutionTime)
-            {
-                _nextExecutionTime = DateTime.Now.AddSeconds(MissionLogIntervalSeconds);
-                MelonCoroutines.Start(RunAllSequentially());
-            }
+            _timer -= Time.deltaTime;
+
+            if (!(_timer <= 0f)) return;
+            
+            _timer = MissionLogIntervalSeconds;
+            if (!_isBotRunning) MelonCoroutines.Start(RunAllSequentially());
         }
 
-        private static IEnumerator RunAllSequentially()
+        private IEnumerator RunAllSequentially()
         {
+            _isBotRunning = true;
             LogManager.Header($"Starting automations - {DateTime.Now:HH:mm:ss}");
 
-            yield return OfflineProgressAutomation.Process();
-            yield return ToolsProductionAutomation.Process();
-            yield return WarfrontCampaignAtomation.Process();
-            yield return MissionMapAutomation.Process();
-            yield return ExpeditionAutomation.Process();
-            yield return FirestoneResearchAutomation.Process();
-            yield return OracleRitualsAutomation.Process();
-            yield return GuardianTrainingAutomation.Process();
-
-            LogManager.WriteLine();
+            try
+            {
+                yield return OfflineProgressAutomation.Process();
+                yield return ToolsProductionAutomation.Process();
+                yield return WarfrontCampaignAtomation.Process();
+                yield return MissionMapAutomation.Process();
+                yield return ExpeditionAutomation.Process();
+                yield return FirestoneResearchAutomation.Process();
+                yield return OracleRitualsAutomation.Process();
+                yield return GuardianTrainingAutomation.Process();
+            }
+            finally
+            {
+                _isBotRunning = false;
+                LogManager.WriteLine();
+            }
         }
     }
 }
