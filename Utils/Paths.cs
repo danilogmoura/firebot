@@ -90,9 +90,11 @@
         {
             public const string Notification = NotificationsGrid + "/OracleRituals";
 
-            public const string CloseButton = Menus + "/Oracle/closeButton";
+            public const string MenuOracle = Menus + "/Oracle";
 
-            public const string RitualSubmenu = Menus + "/Oracle/submenus/bg/ritualSubmenu";
+            public const string CloseButton = MenuOracle + "/closeButton";
+
+            public const string RitualGrid = MenuOracle + "/submenus/bg/ritualSubmenu/ritualsGrid";
         }
     }
 }
