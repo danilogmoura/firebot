@@ -70,16 +70,16 @@
         {
             public const string LibrarySubmenus = Menus + "/Library/submenus";
 
-            public const string FirestoneResearchNotification = NotificationsGrid + "/FirestoneResearch";
+            public const string FirestoneResearchNotificationPath = NotificationsGrid + "/FirestoneResearch";
 
             public const string MissionCloseButton = Menus + "/Library/closeButton";
 
-            public const string ResearchPanelDown = LibrarySubmenus + "/firestoneResearch/researchPanel";
+            public const string ResearchPanelDownPath = LibrarySubmenus + "/firestoneResearch/researchPanel";
 
-            public const string SelectResearchTable =
+            public const string SelectResearchTablePath =
                 LibrarySubmenus + "/firestoneResearch/researchPanel/selectResearchTable";
 
-            public const string SubmenusTree =
+            public const string SubmenusTreePath =
                 LibrarySubmenus + "/firestoneResearch/researchScrollView/viewport/content/submenus";
 
             public const string PopupActivateButton =

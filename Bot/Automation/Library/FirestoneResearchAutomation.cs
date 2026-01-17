@@ -2,7 +2,6 @@
 using FireBot.Bot.Automation.Core;
 using FireBot.Bot.Component;
 using FireBot.Utils;
-using Il2CppTMPro;
 using UnityEngine;
 using static FireBot.Utils.Paths.FirestoneResearch;
 using static FireBot.Utils.StringUtils;
@@ -44,7 +43,7 @@ namespace FireBot.Bot.Automation.Library
                 {
                     var slot = new ResearchSlotWrapper(tree.GetChild(j));
                     if (!slot.IsValid() || !Panel.SelectResearch.IsActive()) continue;
-                    yield return OpenPopup(JoinPath(SubmenusTree, tree.name, slot.Name));
+                    yield return OpenPopup(JoinPath(SubmenusTreePath, tree.name, slot.Name));
 
                     if (Panel.SubmenusWrapper.IsActive() && Buttons.StartResearch.IsInteractable())
                         yield return Buttons.StartResearch.Click();
@@ -65,12 +64,13 @@ namespace FireBot.Bot.Automation.Library
         {
             private readonly Transform _root;
 
+            public string Name { get; }
+
             public ResearchSlotWrapper(Transform t)
             {
                 _root = t;
+                Name = t.name;
             }
-
-            public string Name => _root.name;
 
             public bool IsValid()
             {
@@ -79,40 +79,36 @@ namespace FireBot.Bot.Automation.Library
 
                 var bar = _root.Find("progressBarBg");
                 var glow = _root.Find("glow");
+
                 return bar != null && bar.gameObject.activeInHierarchy &&
                        (glow == null || !glow.gameObject.activeInHierarchy);
-            }
-
-            public string GetTitle()
-            {
-                var t = _root.Find("researchNameBg/researchName")?.GetComponent<TextMeshProUGUI>();
-                return t != null ? t.text : "DESCONHECIDO";
             }
         }
 
         private static class Panel
         {
-            public static ObjectWrapper SubmenusWrapper => new ObjectWrapper(SubmenusTree);
+            public static readonly ObjectWrapper SubmenusWrapper = new ObjectWrapper(SubmenusTreePath);
 
-            public static ObjectWrapper Slot0 => new ObjectWrapper(ResearchPanelDown + "/researchSlot0");
+            public static readonly ObjectWrapper Slot0 = new ObjectWrapper(ResearchPanelDownPath + "/researchSlot0");
 
-            public static ObjectWrapper Slot1 => new ObjectWrapper(ResearchPanelDown + "/researchSlot1");
+            public static readonly ObjectWrapper Slot1 = new ObjectWrapper(ResearchPanelDownPath + "/researchSlot1");
 
-            public static ObjectWrapper SelectResearch => new ObjectWrapper(SelectResearchTable);
+            public static readonly ObjectWrapper SelectResearch = new ObjectWrapper(SelectResearchTablePath);
         }
 
         private static class Buttons
         {
-            public static readonly ButtonWrapper Notification = new ButtonWrapper(FirestoneResearchNotification);
+            public static readonly ButtonWrapper Notification = new ButtonWrapper(FirestoneResearchNotificationPath);
 
-            public static ButtonWrapper ButtonClainSlot0 =>
-                new ButtonWrapper(JoinPath(ResearchPanelDown, "researchSlot0/container/claimButton"));
+            public static readonly ButtonWrapper ButtonClainSlot0 =
+                new ButtonWrapper(JoinPath(ResearchPanelDownPath, "researchSlot0/container/claimButton"));
 
-            public static ButtonWrapper ButtonClainSlot1 =>
-                new ButtonWrapper(JoinPath(ResearchPanelDown, "researchSlot1/container/claimButton"));
+            public static readonly ButtonWrapper ButtonClainSlot1 =
+                new ButtonWrapper(JoinPath(ResearchPanelDownPath, "researchSlot1/container/claimButton"));
 
-            public static ButtonWrapper Close => new ButtonWrapper(MissionCloseButton);
-            public static ButtonWrapper StartResearch => new ButtonWrapper(PopupActivateButton);
+            public static readonly ButtonWrapper Close = new ButtonWrapper(MissionCloseButton);
+
+            public static readonly ButtonWrapper StartResearch = new ButtonWrapper(PopupActivateButton);
         }
     }
 }
