@@ -6,14 +6,14 @@ using static FireBot.Utils.Paths.WarfrontCampaign;
 
 namespace FireBot.Bot.Automation.Enginneer
 {
-    public class WarfrontCampaignAutomation : IAutomationObserver
+    public class WarfrontCampaignAutomation : AutomationObserver
     {
-        public bool ToogleCondition()
+        public override bool ToogleCondition()
         {
             return Button.Notification.IsActive();
         }
 
-        public IEnumerator OnNotificationTriggered()
+        public override IEnumerator OnNotificationTriggered()
         {
             if (!Button.Notification.IsActive()) yield break;
 

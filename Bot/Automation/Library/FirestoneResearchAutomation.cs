@@ -8,14 +8,14 @@ using static FireBot.Utils.StringUtils;
 
 namespace FireBot.Bot.Automation.Library
 {
-    internal class FirestoneResearchAutomation : IAutomationObserver
+    internal class FirestoneResearchAutomation : AutomationObserver
     {
-        public bool ToogleCondition()
+        public override bool ToogleCondition()
         {
             return Buttons.Notification.IsActive();
         }
 
-        public IEnumerator OnNotificationTriggered()
+        public override IEnumerator OnNotificationTriggered()
         {
             if (!Buttons.Notification.IsInteractable()) yield break;
 

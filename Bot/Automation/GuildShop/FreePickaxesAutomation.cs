@@ -6,14 +6,16 @@ using static FireBot.Utils.Paths.GuildShop;
 
 namespace FireBot.Bot.Automation.GuildShop
 {
-    public class FreePickaxesAutomation : IAutomationObserver
+    public class FreePickaxesAutomation : AutomationObserver
     {
-        public bool ToogleCondition()
+        public override int Priority => 25;
+
+        public override bool ToogleCondition()
         {
             return Button.Notification.IsActive();
         }
 
-        public IEnumerator OnNotificationTriggered()
+        public override IEnumerator OnNotificationTriggered()
         {
             if (!Button.Notification.IsInteractable()) yield break;
 

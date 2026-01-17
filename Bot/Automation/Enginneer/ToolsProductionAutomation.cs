@@ -6,14 +6,14 @@ using static FireBot.Utils.Paths.Engineer;
 
 namespace FireBot.Bot.Automation.Enginneer
 {
-    public class ToolsProductionAutomation : IAutomationObserver
+    public class ToolsProductionAutomation : AutomationObserver
     {
-        public bool ToogleCondition()
+        public override bool ToogleCondition()
         {
             return Button.Notification.IsActive();
         }
 
-        public IEnumerator OnNotificationTriggered()
+        public override IEnumerator OnNotificationTriggered()
         {
             if (!Button.Notification.IsActive()) yield break;
 

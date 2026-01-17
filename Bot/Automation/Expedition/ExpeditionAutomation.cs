@@ -7,14 +7,14 @@ using static FireBot.Utils.StringUtils;
 
 namespace FireBot.Bot.Automation.Expedition
 {
-    public class ExpeditionAutomation : IAutomationObserver
+    public class ExpeditionAutomation : AutomationObserver
     {
-        public bool ToogleCondition()
+        public override bool ToogleCondition()
         {
             return Button.Notification.IsActive();
         }
 
-        public IEnumerator OnNotificationTriggered()
+        public override IEnumerator OnNotificationTriggered()
         {
             if (!Button.Notification.IsActive()) yield break;
 
@@ -62,7 +62,7 @@ namespace FireBot.Bot.Automation.Expedition
                 if (!IsActive() && !timeLabel.Exists()) return false;
 
                 var text = timeLabel.GetParsedText();
-                
+
                 //TODO: find better way to check completion
                 return text.Contains("Completed");
             }

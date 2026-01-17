@@ -8,16 +8,16 @@ using static FireBot.Utils.StringUtils;
 
 namespace FireBot.Bot.Automation.Oracle
 {
-    public class OracleRitualsAutomation : IAutomationObserver
+    public class OracleRitualsAutomation : AutomationObserver
     {
         private static readonly List<Ritual> RitualsCache = new List<Ritual>();
 
-        public bool ToogleCondition()
+        public override bool ToogleCondition()
         {
             return Buttons.Notification.IsActive();
         }
 
-        public IEnumerator OnNotificationTriggered()
+        public override IEnumerator OnNotificationTriggered()
         {
             if (!Buttons.Notification.IsInteractable())
                 yield break;

@@ -7,14 +7,14 @@ using static FireBot.Utils.StringUtils;
 
 namespace FireBot.Bot.Automation.MagicQuarters
 {
-    public class GuardianTrainingAutomation : IAutomationObserver
+    public class GuardianTrainingAutomation : AutomationObserver
     {
-        public bool ToogleCondition()
+        public override bool ToogleCondition()
         {
             return Button.Notification.IsActive();
         }
 
-        public IEnumerator OnNotificationTriggered()
+        public override IEnumerator OnNotificationTriggered()
         {
             if (!Button.Notification.IsInteractable())
                 yield break;

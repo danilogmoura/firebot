@@ -2,10 +2,14 @@
 
 namespace FireBot.Bot.Automation.Core
 {
-    public interface IAutomationObserver
+    public abstract class AutomationObserver
     {
-        bool ToogleCondition();
+        // We define 50 as the default "middle ground".
+        // Virtual allows child classes to override it if they want.
+        public virtual int Priority => 50;
 
-        IEnumerator OnNotificationTriggered();
+        public abstract bool ToogleCondition();
+
+        public abstract IEnumerator OnNotificationTriggered();
     }
 }

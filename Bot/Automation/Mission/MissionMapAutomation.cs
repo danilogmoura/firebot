@@ -11,16 +11,16 @@ using static FireBot.Utils.StringUtils;
 
 namespace FireBot.Bot.Automation.Mission
 {
-    internal class MissionMapAutomation : IAutomationObserver
+    internal class MissionMapAutomation : AutomationObserver
     {
         private static List<Mission> _missionCache;
 
-        public bool ToogleCondition()
+        public override bool ToogleCondition()
         {
             return Buttons.Notification.IsActive();
         }
 
-        public IEnumerator OnNotificationTriggered()
+        public override IEnumerator OnNotificationTriggered()
         {
             if (!Buttons.Notification.IsActive()) yield break;
 
