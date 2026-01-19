@@ -50,7 +50,6 @@
         <Compile Include="src\Bot\Automation\Main\OfflineProgressAutomation.cs" />
         <Compile Include="src\Bot\Automation\Mission\MissionMapAutomation.cs" />
         <Compile Include="src\Bot\Automation\Oracle\OracleRitualsAutomation.cs" />
-        <Compile Include="src\Bot\Automation\WarMachine\DailyMissions.cs" />
         <Compile Include="src\Bot\Component\ButtonWrapper.cs" />
         <Compile Include="src\Bot\Component\ComponentWrapper.cs" />
         <Compile Include="src\Bot\Component\MapMissionInteractionWrapper.cs" />
@@ -60,7 +59,7 @@
         <Compile Include="src\Bot\Component\TextMeshProUGUIWrapper.cs" />
         <Compile Include="src\Bot\Component\TextMeshProWrapper.cs" />
         <Compile Include="src\Bot\Component\TimeDisplay.cs" />
-        <Compile Include="src\Config\BotSettings.cs" />
+        <Compile Include="src\Core\BotSettings.cs" />
         <Compile Include="src\Utils\LogManager.cs" />
         <Compile Include="src\Utils\Paths.cs" />
         <Compile Include="src\Utils\StringUtils.cs" />

@@ -2,7 +2,7 @@
 using System.IO;
 using MelonLoader;
 
-namespace FireBot.Config
+namespace FireBot.Core
 {
     public static class BotSettings
     {

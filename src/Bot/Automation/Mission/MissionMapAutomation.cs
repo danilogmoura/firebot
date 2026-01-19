@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using FireBot.Bot.Automation.Core;
 using FireBot.Bot.Component;
-using FireBot.Config;
+using FireBot.Core;
 using FireBot.Utils;
 using UnityEngine;
 using static FireBot.Utils.Paths.Missions;
