@@ -1,90 +1,56 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-    <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props"
-            Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')"/>
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
     <PropertyGroup>
-        <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-        <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-        <ProjectGuid>{7F318A28-3DE4-4B0D-96E5-AC6F2282CE8F}</ProjectGuid>
-        <OutputType>Library</OutputType>
-        <AppDesignerFolder>Properties</AppDesignerFolder>
-        <RootNamespace>FireBot</RootNamespace>
+        <TargetFramework>net6.0</TargetFramework>
+
         <AssemblyName>FireBot</AssemblyName>
-        <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-        <FileAlignment>512</FileAlignment>
-    </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+        <RootNamespace>FireBot</RootNamespace>
+        <LangVersion>10.0</LangVersion>
+        <Nullable>disable</Nullable>
+
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+
+        <Platforms>x64</Platforms>
         <PlatformTarget>x64</PlatformTarget>
-        <DebugSymbols>true</DebugSymbols>
-        <DebugType>full</DebugType>
-        <Optimize>true</Optimize>
-        <OutputPath>bin\Debug\</OutputPath>
-        <DefineConstants>DEBUG;TRACE</DefineConstants>
-        <ErrorReport>prompt</ErrorReport>
-        <WarningLevel>4</WarningLevel>
+        <Optimize Condition="'$(Configuration)' == 'Release'">true</Optimize>
     </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-        <PlatformTarget>x64</PlatformTarget>
-        <DebugType>pdbonly</DebugType>
-        <Optimize>true</Optimize>
-        <OutputPath>bin\Release\</OutputPath>
-        <DefineConstants>TRACE</DefineConstants>
-        <ErrorReport>prompt</ErrorReport>
-        <WarningLevel>4</WarningLevel>
-    </PropertyGroup>
-    <PropertyGroup>
-        <PostBuildEvent>move FireBot.dll "$(FirestoneGamePath)\Mods"</PostBuildEvent>
-    </PropertyGroup>
+
     <ItemGroup>
-        <Compile Include="Main.cs" />
-        <Compile Include="Properties\AssemblyInfo.cs" />
-        <Compile Include="src\Bot\Automation\Core\AutomationHandler.cs" />
-        <Compile Include="src\Bot\Automation\Core\IAutomationObserver.cs" />
-        <Compile Include="src\Bot\Automation\Enginneer\ToolsProductionAutomation.cs" />
-        <Compile Include="src\Bot\Automation\Enginneer\WarfrontCampaignAutomation.cs" />
-        <Compile Include="src\Bot\Automation\Expedition\ExpeditionAutomation.cs" />
-        <Compile Include="src\Bot\Automation\GuildShop\FreePickaxesAutomation.cs" />
-        <Compile Include="src\Bot\Automation\Library\FirestoneResearchAutomation.cs" />
-        <Compile Include="src\Bot\Automation\MagicQuarters\GuardianTrainingAutomation.cs" />
-        <Compile Include="src\Bot\Automation\Main\CloseEventsAutomation_Disabled.cs" />
-        <Compile Include="src\Bot\Automation\Main\OfflineProgressAutomation.cs" />
-        <Compile Include="src\Bot\Automation\Mission\MissionMapAutomation.cs" />
-        <Compile Include="src\Bot\Automation\Oracle\OracleRitualsAutomation.cs" />
-        <Compile Include="src\Bot\Component\ButtonWrapper.cs" />
-        <Compile Include="src\Bot\Component\ComponentWrapper.cs" />
-        <Compile Include="src\Bot\Component\MapMissionInteractionWrapper.cs" />
-        <Compile Include="src\Bot\Component\MappedObjectBase.cs" />
-        <Compile Include="src\Bot\Component\ObjectWrapper.cs" />
-        <Compile Include="src\Bot\Component\SpriteRendererWrapper.cs" />
-        <Compile Include="src\Bot\Component\TextMeshProUGUIWrapper.cs" />
-        <Compile Include="src\Bot\Component\TextMeshProWrapper.cs" />
-        <Compile Include="src\Bot\Component\TimeDisplay.cs" />
-        <Compile Include="src\Core\BotSettings.cs" />
-        <Compile Include="src\Utils\LogManager.cs" />
-        <Compile Include="src\Utils\Paths.cs" />
-        <Compile Include="src\Utils\StringUtils.cs" />
+        <!-- Excluir os arquivos da UniverseLib da compilacao -->
+        <Compile Remove="external\**\*"/>
+        <EmbeddedResource Remove="external\**\*"/>
+        <None Remove="external\**\*"/>
     </ItemGroup>
+
     <ItemGroup>
-        <None Include="App.config" />
+        <PackageReference Include="Mono.Cecil" Version="0.11.6"/>
+        <PackageReference Include="Iced" Version="1.21.0"/>
     </ItemGroup>
+
     <ItemGroup>
+        <Reference Include="MelonLoader">
+            <HintPath>$(FirestoneGamePath)\MelonLoader\net6\MelonLoader.dll</HintPath>
+        </Reference>
         <Reference Include="0Harmony">
             <HintPath>$(FirestoneGamePath)\MelonLoader\net6\0Harmony.dll</HintPath>
-        </Reference>
-        <Reference Include="Assembly-CSharp">
-            <HintPath>$(FirestoneGamePath)\MelonLoader\Il2CppAssemblies\Assembly-CSharp.dll</HintPath>
         </Reference>
         <Reference Include="Il2CppInterop.Runtime">
             <HintPath>$(FirestoneGamePath)\MelonLoader\net6\Il2CppInterop.Runtime.dll</HintPath>
         </Reference>
+        <Reference Include="Assembly-CSharp">
+            <HintPath>$(FirestoneGamePath)\MelonLoader\Il2CppAssemblies\Assembly-CSharp.dll</HintPath>
+        </Reference>
+        <Reference Include="Il2CppACTk.Runtime">
+            <HintPath>$(FirestoneGamePath)\MelonLoader\Il2CppAssemblies\Il2CppACTk.Runtime.dll</HintPath>
+        </Reference>
         <Reference Include="Il2Cppmscorlib">
             <HintPath>$(FirestoneGamePath)\MelonLoader\Il2CppAssemblies\Il2Cppmscorlib.dll</HintPath>
         </Reference>
-        <Reference Include="MelonLoader">
-            <HintPath>$(FirestoneGamePath)\MelonLoader\net6\MelonLoader.dll</HintPath>
-        </Reference>
         <Reference Include="Unity.TextMeshPro">
             <HintPath>$(FirestoneGamePath)\MelonLoader\Il2CppAssemblies\Unity.TextMeshPro.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine">
+            <HintPath>$(FirestoneGamePath)\MelonLoader\Il2CppAssemblies\UnityEngine.dll</HintPath>
         </Reference>
         <Reference Include="UnityEngine.CoreModule">
             <HintPath>$(FirestoneGamePath)\MelonLoader\Il2CppAssemblies\UnityEngine.CoreModule.dll</HintPath>
@@ -92,15 +58,24 @@
         <Reference Include="UnityEngine.IMGUIModule">
             <HintPath>$(FirestoneGamePath)\MelonLoader\Il2CppAssemblies\UnityEngine.IMGUIModule.dll</HintPath>
         </Reference>
+        <Reference Include="UnityEngine.InputLegacyModule">
+            <HintPath>$(FirestoneGamePath)\MelonLoader\Il2CppAssemblies\UnityEngine.InputLegacyModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.TextRenderingModule">
+            <HintPath>$(FirestoneGamePath)\MelonLoader\Il2CppAssemblies\UnityEngine.TextRenderingModule.dll</HintPath>
+        </Reference>
         <Reference Include="UnityEngine.UI">
             <HintPath>$(FirestoneGamePath)\MelonLoader\Il2CppAssemblies\UnityEngine.UI.dll</HintPath>
         </Reference>
     </ItemGroup>
+
     <ItemGroup>
-      <Content Include=".gitignore" />
-      <Content Include=".gitmodules" />
-      <Content Include="Directory.Build.props" />
-      <Content Include="global.json" />
+        <ProjectReference Include="external\UniverseLib\UniverseLib.MelonLoader.IL2CPP\UniverseLib.MelonLoader.IL2CPP.csproj" />
     </ItemGroup>
-    <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>
+
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+        <Exec Command="copy /Y &quot;$(TargetPath)&quot; &quot;$(FirestoneGamePath)\Mods\$(TargetFileName)&quot;"/>
+        <Message Text="Copiado para a pasta de Mods: $(FirestoneGamePath)\Mods" Importance="high"/>
+    </Target>
+
 </Project>

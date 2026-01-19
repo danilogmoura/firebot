@@ -4,42 +4,39 @@ using FireBot.Utils;
 using MelonLoader;
 using UnityEngine;
 
-namespace FireBot
+namespace FireBot;
+
+public static class BuildInfo
 {
-    public static class BuildInfo
+    public const string Name = "FireBot";
+    public const string Author = "danilogmoura";
+    public const string Version = "0.1.0";
+}
+
+public class Main : MelonMod
+{
+    private float _scanTimer;
+
+    public override void OnInitializeMelon()
     {
-        public const string Name = "FireBot";
-        public const string Description = "";
-        public const string Author = "danilogmoura";
-        public const string Company = null;
-        public const string Version = "1.0.0";
+        BotSettings.Initialize();
+        AutomationHandler.AutoRegister();
     }
 
-    public class Main : MelonMod
+    public override void OnLateInitializeMelon()
     {
-        private float _scanTimer;
+        LogManager.Initialize(LoggerInstance);
+    }
 
-        public override void OnInitializeMelon()
-        {
-            BotSettings.Initialize();
-            AutomationHandler.AutoRegister();
-        }
+    public override void OnUpdate()
+    {
+        if (!BotSettings.IsBotEnabled.Value) return;
 
-        public override void OnLateInitializeMelon()
-        {
-            LogManager.Initialize(LoggerInstance);
-        }
+        _scanTimer -= Time.deltaTime;
 
-        public override void OnUpdate()
-        {
-            if (!BotSettings.IsBotEnabled.Value) return;
+        if (!(_scanTimer <= 0f)) return;
 
-            _scanTimer -= Time.deltaTime;
-
-            if (!(_scanTimer <= 0f)) return;
-
-            _scanTimer = BotSettings.ScanInterval.Value;
-            AutomationHandler.CheckNotifications();
-        }
+        _scanTimer = BotSettings.ScanInterval.Value;
+        AutomationHandler.CheckNotifications();
     }
 }
