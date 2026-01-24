@@ -49,6 +49,10 @@
         </Reference>
     </ItemGroup>
 
+    <ItemGroup>
+        <ProjectReference Include="..\external\UniverseLib\UniverseLib.MelonLoader.IL2CPP\UniverseLib.MelonLoader.IL2CPP.csproj"/>
+    </ItemGroup>
+
     <Target Name="PostBuild" AfterTargets="Build">
         <Message Text="[Deploy] Copiando $(AssemblyName).dll para a pasta de Mods..." Importance="High"/>
         <Message Text="➡ Destino: $(ModsDir)" Importance="High"/>
@@ -61,5 +65,4 @@
         <Warning Text="A pasta de Mods não foi encontrada. O arquivo não foi copiado."
                  Condition="!Exists('$(ModsDir)')"/>
     </Target>
-
 </Project>
