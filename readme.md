@@ -35,5 +35,12 @@ For now, all configuration must be done directly through this file. A configurat
 ## Contributing
 Contributions are welcome! Please submit a pull request or open an issue for any suggestions or improvements.
 
-## License
-This project is licensed under the MIT License. You can do anything with the code, including using, modifying, and distributing it freely.
+## Disclaimer: Not a Cheat
+
+Firebot is not a cheat. It does not modify game resources, grant unfair advantages, interfere with server logic, or alter game files. The bot only automates actions that a player could perform manually, without bypassing any security or protection mechanisms of the game.
+
+## Technical Details
+
+- Firebot is implemented as a mod using MelonLoader, enabling automation of repetitive tasks within the game client itself.
+- All actions performed by the bot simulate clicks and commands that a user would normally do, without modifying server data or circumventing security systems.
+- The code is open source and auditable, ensuring transparency about its operation.
