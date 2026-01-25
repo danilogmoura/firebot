@@ -15,6 +15,8 @@ namespace FireBot.Bot.Automation.Mission
     {
         private static List<Mission> _missionCache;
 
+        public override string SectionName => "Mission_Map";
+
         public override bool ToogleCondition()
         {
             return Buttons.Notification.IsActive();

@@ -5,65 +5,66 @@ using FireBot.Utils;
 using static FireBot.Utils.Paths.GuardianTraining;
 using static FireBot.Utils.StringUtils;
 
-namespace FireBot.Bot.Automation.MagicQuarters
+namespace FireBot.Bot.Automation.MagicQuarters;
+
+public class GuardianTrainingAutomation : AutomationObserver
 {
-    public class GuardianTrainingAutomation : AutomationObserver
+    public override string SectionName => "GuardianTraining";
+
+    public override bool ToogleCondition()
     {
-        public override bool ToogleCondition()
+        return Button.Notification.IsActive();
+    }
+
+    public override IEnumerator OnNotificationTriggered()
+    {
+        if (!Button.Notification.IsInteractable())
+            yield break;
+
+        yield return Button.Notification?.Click();
+
+        if (!Object.Panel.IsActive()) yield break;
+
+        LogManager.SubHeader("Guardian Training");
+
+        if (Object.CooldownOn == null || Object.CooldownOn.IsActive())
         {
-            return Button.Notification.IsActive();
+            yield return Button.Close?.Click();
+            yield break;
         }
 
-        public override IEnumerator OnNotificationTriggered()
+        var guardianList = new ObjectWrapper(GuardianList).Transform;
+        for (var i = 0; i < guardianList.childCount; i++)
         {
-            if (!Button.Notification.IsInteractable())
-                yield break;
+            var guardianRoot = guardianList.GetChild(i);
+            var starsParent = guardianRoot.Find("starsParent");
 
-            yield return Button.Notification?.Click();
+            if (Object.CooldownOn.IsActive()) break;
 
-            if (!Object.Panel.IsActive()) yield break;
+            if (Button.Training != null &&
+                (!starsParent.gameObject.activeSelf || !Button.Training.IsInteractable())) continue;
 
-            LogManager.SubHeader("Guardian Training");
+            yield return Button.Training?.Click();
 
-            if (Object.CooldownOn == null || Object.CooldownOn.IsActive())
-            {
-                yield return Button.Close?.Click();
-                yield break;
-            }
-
-            var guardianList = new ObjectWrapper(GuardianList).Transform;
-            for (var i = 0; i < guardianList.childCount; i++)
-            {
-                var guardianRoot = guardianList.GetChild(i);
-                var starsParent = guardianRoot.Find("starsParent");
-
-                if (Object.CooldownOn.IsActive()) break;
-
-                if (Button.Training != null &&
-                    (!starsParent.gameObject.activeSelf || !Button.Training.IsInteractable())) continue;
-
-                yield return Button.Training?.Click();
-
-                yield return new ButtonWrapper(JoinPath(GuardianList, guardianRoot.name)).Click();
-            }
-
-            yield return Button.Close.Click();
+            yield return new ButtonWrapper(JoinPath(GuardianList, guardianRoot.name)).Click();
         }
 
-        private static class Button
-        {
-            public static readonly ButtonWrapper Notification = new ButtonWrapper(GuardianTrainingNotification);
+        yield return Button.Close.Click();
+    }
 
-            public static readonly ButtonWrapper Close = new ButtonWrapper(CloseButton);
+    private static class Button
+    {
+        public static readonly ButtonWrapper Notification = new(GuardianTrainingNotification);
 
-            public static readonly ButtonWrapper Training = new ButtonWrapper(TrainingButton);
-        }
+        public static readonly ButtonWrapper Close = new(CloseButton);
 
-        private readonly struct Object
-        {
-            public static readonly ObjectWrapper CooldownOn = new ObjectWrapper(JoinPath(TrainingButton, "cooldownOn"));
+        public static readonly ButtonWrapper Training = new(TrainingButton);
+    }
 
-            public static readonly ObjectWrapper Panel = new ObjectWrapper(MenuMagicQuarters);
-        }
+    private readonly struct Object
+    {
+        public static readonly ObjectWrapper CooldownOn = new(JoinPath(TrainingButton, "cooldownOn"));
+
+        public static readonly ObjectWrapper Panel = new(MenuMagicQuarters);
     }
 }

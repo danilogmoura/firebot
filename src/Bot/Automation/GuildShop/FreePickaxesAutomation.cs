@@ -4,38 +4,38 @@ using FireBot.Bot.Component;
 using FireBot.Utils;
 using static FireBot.Utils.Paths.GuildShop;
 
-namespace FireBot.Bot.Automation.GuildShop
+namespace FireBot.Bot.Automation.GuildShop;
+
+public class FreePickaxesAutomation : AutomationObserver
 {
-    public class FreePickaxesAutomation : AutomationObserver
+    public override string SectionName => "Free Pickaxes";
+    public override int Priority => 25;
+
+    public override bool ToogleCondition()
     {
-        public override int Priority => 25;
+        return Button.Notification.IsActive();
+    }
 
-        public override bool ToogleCondition()
-        {
-            return Button.Notification.IsActive();
-        }
+    public override IEnumerator OnNotificationTriggered()
+    {
+        if (!Button.Notification.IsInteractable()) yield break;
 
-        public override IEnumerator OnNotificationTriggered()
-        {
-            if (!Button.Notification.IsInteractable()) yield break;
+        LogManager.SubHeader("Free Pickaxes");
 
-            LogManager.SubHeader("Free Pickaxes");
+        yield return Button.Notification.Click();
 
-            yield return Button.Notification.Click();
+        if (Button.FreePickaxeItem.IsInteractable())
+            yield return Button.FreePickaxeItem.Click();
 
-            if (Button.FreePickaxeItem.IsInteractable())
-                yield return Button.FreePickaxeItem.Click();
+        yield return Button.Close.Click();
+    }
 
-            yield return Button.Close.Click();
-        }
+    private static class Button
+    {
+        public static readonly ButtonWrapper Notification = new(FreePickaxesNotificationPath);
 
-        private static class Button
-        {
-            public static readonly ButtonWrapper Notification = new ButtonWrapper(FreePickaxesNotificationPath);
+        public static readonly ButtonWrapper Close = new(CloseButtonPath);
 
-            public static readonly ButtonWrapper Close = new ButtonWrapper(CloseButtonPath);
-
-            public static readonly ButtonWrapper FreePickaxeItem = new ButtonWrapper(FreePickaxeItemPath);
-        }
+        public static readonly ButtonWrapper FreePickaxeItem = new(FreePickaxeItemPath);
     }
 }

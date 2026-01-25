@@ -11,6 +11,8 @@ namespace FireBot.Bot.Automation.Main
         private static readonly ObjectWrapper Popup = new ObjectWrapper(OfflineProgressPopup);
         private static readonly ButtonWrapper ClaimButton = new ButtonWrapper(OfflineProgressPopupClaimButton);
 
+        public override string SectionName => "Offline Progress";
+
         public override bool ToogleCondition()
         {
             return Popup.IsActive();

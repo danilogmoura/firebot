@@ -10,6 +10,8 @@ namespace FireBot.Bot.Automation.Library;
 
 internal class FirestoneResearchAutomation : AutomationObserver
 {
+    public override string SectionName => "Firestone Research";
+
     public override bool ToogleCondition()
     {
         return Buttons.Notification.IsActive();
