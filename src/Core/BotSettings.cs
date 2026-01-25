@@ -1,53 +1,42 @@
 ﻿using System;
 using System.IO;
+using FireBot.Bot.Automation.Core;
 using MelonLoader;
+using UnityEngine;
 
-namespace FireBot.Core
+namespace FireBot.Core;
+
+public static class BotSettings
 {
-    public static class BotSettings
+    private static MelonPreferences_Category _category;
+
+    // Globais
+    public static MelonPreferences_Entry<bool> IsBotEnabled;
+    public static MelonPreferences_Entry<float> ScanInterval;
+    public static MelonPreferences_Entry<float> InteractionDelay;
+
+    // Safe Properties
+    public static float SafeScanInterval => Mathf.Max(0.1f, ScanInterval.Value);
+    public static float SafeInteractionDelay => Mathf.Max(0.05f, InteractionDelay.Value);
+
+    public static void Initialize()
     {
-        private static MelonPreferences_Category _category;
+        var configPath = Path.Combine("UserData", "FirebotPreferences.cfg");
 
-        public static MelonPreferences_Entry<bool> IsBotEnabled;
-        public static MelonPreferences_Entry<float> ScanInterval;
-        public static MelonPreferences_Entry<float> InteractionDelay;
+        _category = MelonPreferences.CreateCategory("firebot_settings", "Firebot Settings");
+        _category.SetFilePath(configPath);
 
-        public static void Initialize()
-        {
-            _category = MelonPreferences.CreateCategory("FireBotSettings", " [ FIRE BOT CONFIGURATION ] ");
+        IsBotEnabled = _category.CreateEntry("IsBotEnabled", true, "Enable Bot", "Enable the bot system");
+        ScanInterval =
+            _category.CreateEntry("ScanInterval", 5.0f, "Scan Interval", "Time between bot checks");
+        InteractionDelay = _category.CreateEntry("InteractionDelay", 1.0f, "Interaction Delay",
+            "Delay between UI interactions");
 
-            _category.SetFilePath(Path.Combine("UserData", "fire-bot.cfg"));
+        _category.SaveToFile();
 
-            // --- CONFIGURATION ENTRIES ---
+        AutomationHandler.AutoRegister(configPath);
 
-            IsBotEnabled = _category.CreateEntry(
-                "IsBotEnabled",
-                true,
-                "Enable Bot",
-                "Toggle the main logic of the bot. If false, all automated actions are suspended.");
-
-            ScanInterval = _category.CreateEntry(
-                "ScanInterval",
-                5.0f,
-                "Scan Interval (seconds)",
-                "The frequency at which the bot searches for new targets. Lower values increase responsiveness but may affect CPU performance.");
-
-            InteractionDelay = _category.CreateEntry(
-                "InteractionDelay",
-                1.0f,
-                "Interaction Delay (seconds)",
-                "Wait time between specific actions (clicks, key presses, etc.) to simulate human-like behavior.");
-
-            _category.SaveToFile();
-
-            // Usando a técnica de duas cores que aprendemos para o log
-            MelonLogger.Msg(ConsoleColor.DarkCyan, "[FireBot] ", ConsoleColor.Gray,
-                "Configuration initialized at UserData/fire-bot.cfg");
-        }
-
-        public static void Save()
-        {
-            _category.SaveToFile();
-        }
+        MelonLogger.Msg(ConsoleColor.DarkCyan, "[Firebot] ", ConsoleColor.Gray,
+            $"System Initialized. Configuration: {configPath}");
     }
 }

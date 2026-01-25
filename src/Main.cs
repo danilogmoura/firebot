@@ -26,7 +26,6 @@ public class Main : MelonMod
     public override void OnInitializeMelon()
     {
         BotSettings.Initialize();
-        AutomationHandler.AutoRegister();
     }
 
     public override void OnLateInitializeMelon()

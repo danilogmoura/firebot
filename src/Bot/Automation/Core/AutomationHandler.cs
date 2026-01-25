@@ -5,60 +5,72 @@ using System.Linq;
 using System.Reflection;
 using MelonLoader;
 
-namespace FireBot.Bot.Automation.Core
+namespace FireBot.Bot.Automation.Core;
+
+public static class AutomationHandler
 {
-    public static class AutomationHandler
+    private static bool _isProcessing;
+
+    public static List<AutomationObserver> Observers { get; private set; } = new();
+
+    public static void AutoRegister(string configFilePath)
     {
-        private static List<AutomationObserver> _observers = new List<AutomationObserver>();
-        private static bool _isProcessing;
+        var assembly = Assembly.GetExecutingAssembly();
 
-        public static void AutoRegister()
-        {
-            var assembly = Assembly.GetExecutingAssembly();
+        const string targetNamespace = "FireBot.Bot.Automation";
+        const string suffix = "Automation";
 
-            const string targetNamespace = "FireBot.Bot.Automation";
-            const string suffix = "Automation";
+        var automationTypes = assembly.GetTypes()
+            .Where(t => typeof(AutomationObserver).IsAssignableFrom(t)
+                        && !t.IsInterface
+                        && !t.IsAbstract
+                        && t.Namespace != null && t.Namespace.StartsWith(targetNamespace)
+                        && t.Name.EndsWith(suffix))
+            .ToList();
 
-            var automationTypes = assembly.GetTypes()
-                .Where(t => typeof(AutomationObserver).IsAssignableFrom(t)
-                            && !t.IsInterface
-                            && !t.IsAbstract
-                            && t.Namespace != null && t.Namespace.StartsWith(targetNamespace)
-                            && t.Name.EndsWith(suffix))
-                .ToList();
-
-            foreach (var type in automationTypes)
-                try
-                {
-                    var instance = (AutomationObserver)Activator.CreateInstance(type);
-                    _observers.Add(instance);
-                    MelonLogger.Msg($"[AutoRegister] Loaded: {type.Name} from namespace {type.Namespace}");
-                }
-                catch (Exception ex)
-                {
-                    MelonLogger.Error($"Failed to load{type.Name}: {ex.Message}");
-                }
-
-            _observers = _observers.OrderBy(o => o.Priority).ToList();
-            MelonLogger.Msg($"[AutoRegister] {_observers.Count} automations loaded and ordered by priority.");
-        }
-
-        public static void CheckNotifications()
-        {
-            if (_isProcessing) return;
-
-            foreach (var observer in _observers.Where(observer => observer.ToogleCondition()))
+        foreach (var type in automationTypes)
+            try
             {
-                MelonCoroutines.Start(ExecuteRoutine(observer));
-                break;
-            }
-        }
+                var instance = (AutomationObserver)Activator.CreateInstance(type);
 
-        private static IEnumerator ExecuteRoutine(AutomationObserver observer)
+                if (instance != null)
+                {
+                    instance.InitializeConfig(configFilePath);
+
+                    Observers.Add(instance);
+                }
+
+                MelonLogger.Msg($"[AutoRegister] Loaded & Configured: {type.Name}");
+            }
+            catch (Exception ex)
+            {
+                MelonLogger.Error($"Failed to load {type.Name}: {ex.Message}");
+            }
+
+        Observers = Observers.OrderBy(o => o.Priority).ToList();
+        MelonLogger.Msg($"[AutoRegister] {Observers.Count} automations loaded and ordered.");
+    }
+
+    public static void CheckNotifications()
+    {
+        if (_isProcessing) return;
+
+        foreach (var observer in Observers.Where(observer => observer.IsEnabled && observer.ToogleCondition()))
         {
-            _isProcessing = true;
-            yield return observer.OnNotificationTriggered();
-            _isProcessing = false;
+            MelonCoroutines.Start(ExecuteRoutine(observer));
+            break;
         }
+    }
+
+    private static IEnumerator ExecuteRoutine(AutomationObserver observer)
+    {
+        _isProcessing = true;
+        yield return observer.OnNotificationTriggered();
+        _isProcessing = false;
+    }
+
+    public static T GetObserver<T>() where T : AutomationObserver
+    {
+        return Observers.OfType<T>().FirstOrDefault();
     }
 }
