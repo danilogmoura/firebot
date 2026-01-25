@@ -8,9 +8,6 @@ packages/
 *.userosscache
 *.sln.DotSettings.user
 
-## --- MSBuild Configuration Files ---
-Directory.Build.props
-
 ## --- IDE Specific Files (Rider, VS Code, Visual Studio) ---
 .idea/
 .vscode/

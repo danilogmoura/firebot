@@ -15,8 +15,10 @@
 
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
+        <Platforms>x64</Platforms>
+        <PlatformTarget>x64</PlatformTarget>
     </PropertyGroup>
-    
+
     <PropertyGroup>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     </PropertyGroup>
