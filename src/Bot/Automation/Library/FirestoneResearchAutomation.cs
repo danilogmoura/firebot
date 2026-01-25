@@ -22,7 +22,6 @@ internal class FirestoneResearchAutomation : AutomationObserver
 
         yield return Buttons.Notification.Click();
 
-        Log($"{SectionTitle}");
         if (!Panel.SubmenusWrapper.IsActive() && Panel.SelectResearch.IsActive())
             yield break;
 

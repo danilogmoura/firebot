@@ -18,7 +18,6 @@ public class WarfrontCampaignAutomation : AutomationObserver
     {
         if (!Button.Notification.IsActive()) yield break;
 
-        Log($"{SectionTitle}");
         yield return Button.Notification.Click();
 
         var claimToolsButton = new ButtonWrapper(ClaimToolsButton);

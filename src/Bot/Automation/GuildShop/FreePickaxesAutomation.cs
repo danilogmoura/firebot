@@ -19,7 +19,6 @@ public class FreePickaxesAutomation : AutomationObserver
     {
         if (!Button.Notification.IsInteractable()) yield break;
 
-        Log($"{SectionTitle}");
         yield return Button.Notification.Click();
 
         if (Button.FreePickaxeItem.IsInteractable())

@@ -32,7 +32,6 @@ public class ExpeditionAutomation : AutomationObserver
     {
         if (!Button.Notification.IsActive()) yield break;
 
-        Log($"{SectionTitle}");
         yield return Button.Notification.Click();
 
         if (Expeditions.CurrentExpedition.IsCompleted())

@@ -20,7 +20,6 @@ internal class OfflineProgressAutomation : AutomationObserver
 
     public override IEnumerator OnNotificationTriggered()
     {
-        Log($"{SectionTitle}");
         yield return ClaimButton.Click();
     }
 }

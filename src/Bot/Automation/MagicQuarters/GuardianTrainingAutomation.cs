@@ -25,8 +25,6 @@ public class GuardianTrainingAutomation : AutomationObserver
 
         if (!Object.Panel.IsActive()) yield break;
 
-        Log($"{SectionTitle}");
-
         if (Object.CooldownOn == null || Object.CooldownOn.IsActive())
         {
             yield return Button.Close?.Click();

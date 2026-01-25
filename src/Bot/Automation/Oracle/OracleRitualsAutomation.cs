@@ -26,7 +26,6 @@ public class OracleRitualsAutomation : AutomationObserver
         yield return Buttons.Notification.Click();
 
         if (!Panel.OraclePanel.IsActive()) yield break;
-        Log($"{SectionTitle}");
 
         if (!Panel.OracleRitualGrid.IsActive()) yield break;
         UpdateRitualCache();

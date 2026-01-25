@@ -26,7 +26,6 @@ public class CloseEventsAutomation : AutomationObserver
 
     public override IEnumerator OnNotificationTriggered()
     {
-        Log($"{SectionTitle}");
         yield return CloseEvents();
     }
 

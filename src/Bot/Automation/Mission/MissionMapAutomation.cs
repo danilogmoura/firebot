@@ -37,8 +37,6 @@ internal class MissionMapAutomation : AutomationObserver
             yield break;
         }
 
-        Log($"{SectionTitle}");
-
         foreach (var mission in _missionCache.Where(mission => mission.IsActive && mission.IsClaim))
             yield return mission.Click();
 
