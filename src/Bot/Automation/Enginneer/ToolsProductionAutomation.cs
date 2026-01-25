@@ -1,7 +1,6 @@
 using System.Collections;
 using Firebot.Bot.Automation.Core;
 using Firebot.Bot.Component;
-using UnityEngine;
 using static Firebot.Utils.Paths.Engineer;
 
 namespace Firebot.Bot.Automation.Enginneer;
@@ -18,7 +17,7 @@ public class ToolsProductionAutomation : AutomationObserver
     public override IEnumerator OnNotificationTriggered()
     {
         if (!Button.Notification.IsActive()) yield break;
-        
+
         yield return Button.Notification.Click();
 
         var caimToolsButton = new ButtonWrapper(ClaimToolsButton);

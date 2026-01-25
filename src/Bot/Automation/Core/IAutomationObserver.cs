@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using Firebot.Utils;
 using MelonLoader;
 
 namespace Firebot.Bot.Automation.Core;
@@ -45,16 +46,21 @@ public abstract class AutomationObserver
 
     protected void Log(string message)
     {
-        MelonLogger.Msg($"[{SectionTitle}] {message}");
+        LogManager.Info(SectionTitle, message);
     }
 
     protected void LogWarning(string message)
     {
-        MelonLogger.Warning($"[{SectionTitle}] {message}");
+        LogManager.Warning(SectionTitle, message);
     }
 
     protected void LogError(string message)
     {
-        MelonLogger.Error($"[{SectionTitle}] {message}");
+        LogManager.Error(SectionTitle, message);
+    }
+
+    protected void LogDebug(string message)
+    {
+        LogManager.Debug(SectionTitle, message);
     }
 }
