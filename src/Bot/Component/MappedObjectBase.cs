@@ -1,6 +1,7 @@
-﻿using Firebot.Utils;
+﻿using System;
+using System.Runtime.CompilerServices;
+using Firebot.Utils;
 using UnityEngine;
-using static Firebot.Core.BotSettings;
 using UnityGameObject = UnityEngine.GameObject;
 
 namespace Firebot.Bot.Component;
@@ -30,19 +31,51 @@ internal abstract class MappedObjectBase
 
     private void FindAndCacheTransform()
     {
-        if (string.IsNullOrEmpty(_path)) return;
-
-        var rootObj = UnityGameObject.Find(_path.Split('/')[0]);
-
-        if (rootObj == null)
+        ExecuteSafe(() =>
         {
-            if (DebugMode) LogManager.Warning("MapError", $"{ObjectName}: Root not found for {_path}");
-            return;
-        }
+            if (string.IsNullOrEmpty(_path)) return;
 
-        _cachedTransform = !_path.Contains('/')
-            ? rootObj.transform
-            : rootObj.transform.Find(_path.Substring(_path.IndexOf('/') + 1));
+            var rootObj = UnityGameObject.Find(_path.Split('/')[0]);
+            if (rootObj == null)
+            {
+                LogManager.Debug("MapError", $"{ObjectName}: Root not found for {_path}");
+                return;
+            }
+
+            _cachedTransform = !_path.Contains('/')
+                ? rootObj.transform
+                : rootObj.transform.Find(_path.Substring(_path.IndexOf('/') + 1));
+
+            if (_cachedTransform != null)
+                LogManager.Debug("MapSuccess", $"{ObjectName}: Cached {_path}");
+        });
+    }
+
+    protected void ExecuteSafe(Action action, [CallerMemberName] string actionName = null)
+    {
+        try
+        {
+            action?.Invoke();
+        }
+        catch (Exception ex)
+        {
+            LogManager.Error(ObjectName, $"Error in '{actionName}': {ex.Message}");
+            LogManager.Debug(ObjectName, ex.StackTrace);
+        }
+    }
+
+    protected T ExecuteSafe<T>(Func<T> func, [CallerMemberName] string actionName = null, T defaultValue = default)
+    {
+        try
+        {
+            return func();
+        }
+        catch (Exception ex)
+        {
+            LogManager.Error(ObjectName, $"Error in '{actionName}': {ex.Message}");
+            LogManager.Debug(ObjectName, ex.StackTrace);
+            return defaultValue;
+        }
     }
 
     public void InvalidateCache()
@@ -62,16 +95,16 @@ internal abstract class MappedObjectBase
 
     public bool HasChilden()
     {
-        return IsActive() && CachedTransform?.childCount > 0;
+        return IsActive() && ExecuteSafe(() => CachedTransform.childCount > 0);
     }
 
     public int? ChildCount()
     {
-        return CachedTransform?.childCount;
+        return ExecuteSafe(() => CachedTransform?.childCount);
     }
 
     public Transform GetChild(int level)
     {
-        return CachedTransform?.GetChild(level);
+        return ExecuteSafe(() => CachedTransform?.GetChild(level));
     }
 }
