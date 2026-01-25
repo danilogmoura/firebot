@@ -33,13 +33,13 @@ public class Main : MelonMod
 
     public override void OnUpdate()
     {
-        if (!BotSettings.IsBotEnabled.Value) return;
+        if (!BotSettings.IsEnable) return;
 
         _scanTimer -= Time.deltaTime;
 
         if (!(_scanTimer <= 0f)) return;
 
-        _scanTimer = BotSettings.ScanInterval.Value;
+        _scanTimer = BotSettings.ScanInterval;
         AutomationHandler.CheckNotifications();
     }
 }

@@ -4,7 +4,6 @@ using System.Linq;
 using Firebot.Bot.Automation.Core;
 using Firebot.Bot.Component;
 using Firebot.Core;
-using Firebot.Utils;
 using UnityEngine;
 using static Firebot.Utils.Paths.Missions;
 using static Firebot.Utils.StringUtils;
@@ -112,7 +111,7 @@ internal class MissionMapAutomation : AutomationObserver
         public IEnumerator Click()
         {
             _missionInteractionWrapper?.OnClick();
-            yield return new WaitForSeconds(BotSettings.InteractionDelay.Value);
+            yield return new WaitForSeconds(BotSettings.InteractionDelay);
         }
     }
 
