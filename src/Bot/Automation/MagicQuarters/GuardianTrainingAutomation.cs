@@ -9,11 +9,11 @@ namespace Firebot.Bot.Automation.MagicQuarters;
 
 public class GuardianTrainingAutomation : AutomationObserver
 {
-    public override string SectionName => "Guardian Training";
+    public override string SectionTitle => "Guardian Training";
 
-    public override bool ToogleCondition()
+    public override bool ShouldExecute()
     {
-        return Button.Notification.IsActive();
+        return base.ShouldExecute() && Button.Notification.IsActive();
     }
 
     public override IEnumerator OnNotificationTriggered()
@@ -25,7 +25,7 @@ public class GuardianTrainingAutomation : AutomationObserver
 
         if (!Object.Panel.IsActive()) yield break;
 
-        LogManager.SubHeader("Guardian Training");
+        Log($"{SectionTitle}");
 
         if (Object.CooldownOn == null || Object.CooldownOn.IsActive())
         {

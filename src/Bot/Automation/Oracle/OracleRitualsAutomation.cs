@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Firebot.Bot.Automation.Core;
 using Firebot.Bot.Component;
-using Firebot.Utils;
 using static Firebot.Utils.Paths.OracleRituals;
 using static Firebot.Utils.StringUtils;
 
@@ -12,11 +11,11 @@ public class OracleRitualsAutomation : AutomationObserver
 {
     private static readonly List<Ritual> RitualsCache = new();
 
-    public override string SectionName => "Oracle Rituals";
+    public override string SectionTitle => "Oracle Rituals";
 
-    public override bool ToogleCondition()
+    public override bool ShouldExecute()
     {
-        return Buttons.Notification.IsActive();
+        return base.ShouldExecute() && Buttons.Notification.IsActive();
     }
 
     public override IEnumerator OnNotificationTriggered()
@@ -27,7 +26,7 @@ public class OracleRitualsAutomation : AutomationObserver
         yield return Buttons.Notification.Click();
 
         if (!Panel.OraclePanel.IsActive()) yield break;
-        LogManager.SubHeader("Oracle Rituals");
+        Log($"{SectionTitle}");
 
         if (!Panel.OracleRitualGrid.IsActive()) yield break;
         UpdateRitualCache();

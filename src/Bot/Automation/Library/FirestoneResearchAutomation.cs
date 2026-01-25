@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using Firebot.Bot.Automation.Core;
 using Firebot.Bot.Component;
-using Firebot.Utils;
 using UnityEngine;
 using static Firebot.Utils.Paths.FirestoneResearch;
 using static Firebot.Utils.StringUtils;
@@ -10,11 +9,11 @@ namespace Firebot.Bot.Automation.Library;
 
 internal class FirestoneResearchAutomation : AutomationObserver
 {
-    public override string SectionName => "Firestone Research";
+    public override string SectionTitle => "Firestone Research";
 
-    public override bool ToogleCondition()
+    public override bool ShouldExecute()
     {
-        return Buttons.Notification.IsActive();
+        return base.ShouldExecute() && Buttons.Notification.IsActive();
     }
 
     public override IEnumerator OnNotificationTriggered()
@@ -23,8 +22,7 @@ internal class FirestoneResearchAutomation : AutomationObserver
 
         yield return Buttons.Notification.Click();
 
-        LogManager.SubHeader("Firestone Research");
-
+        Log($"{SectionTitle}");
         if (!Panel.SubmenusWrapper.IsActive() && Panel.SelectResearch.IsActive())
             yield break;
 

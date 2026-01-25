@@ -1,7 +1,6 @@
 ﻿using System.Reflection;
 using Firebot.Bot.Automation.Core;
 using Firebot.Core;
-using Firebot.Utils;
 using MelonLoader;
 using UnityEngine;
 using Main = Firebot.Main;
@@ -30,7 +29,6 @@ public class Main : MelonMod
 
     public override void OnLateInitializeMelon()
     {
-        LogManager.Initialize(LoggerInstance);
     }
 
     public override void OnUpdate()

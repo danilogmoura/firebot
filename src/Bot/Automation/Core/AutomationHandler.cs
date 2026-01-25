@@ -59,7 +59,7 @@ public static class AutomationHandler
     {
         if (_isProcessing) return;
 
-        foreach (var observer in Observers.Where(observer => observer.IsEnabled && observer.ToogleCondition()))
+        foreach (var observer in Observers.Where(observer => observer.IsEnabled && observer.ShouldExecute()))
         {
             MelonCoroutines.Start(ExecuteRoutine(observer));
             break;

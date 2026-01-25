@@ -5,9 +5,11 @@ namespace Firebot.Bot.Automation.Core;
 
 public abstract class AutomationObserver
 {
-    protected MelonPreferences_Entry<bool> _enabledEntry;
+    private MelonPreferences_Entry<bool> _enabledEntry;
 
-    public abstract string SectionName { get; }
+    public abstract string SectionTitle { get; }
+
+    public string SectionId => SectionTitle.ToLower().Replace(" ", "_");
 
     public bool IsEnabled => _enabledEntry != null && _enabledEntry.Value;
 
@@ -17,12 +19,13 @@ public abstract class AutomationObserver
 
     public void InitializeConfig(string filePath)
     {
-        var identifier = SectionName.ToLower().Replace(" ", "_");
-        var category = MelonPreferences.CreateCategory(identifier, $"{SectionName} Settings");
+        if (_enabledEntry != null) return;
+
+        var category = MelonPreferences.CreateCategory(SectionId, $"{SectionTitle} Settings");
         category.SetFilePath(filePath);
 
-        _enabledEntry = category.CreateEntry("Enabled", true, "Enable Module",
-            "Enable this automation module");
+        _enabledEntry = category.CreateEntry("enabled", true, "Enable Module",
+            $"Enable the {SectionTitle} automation module");
 
         OnConfigure(category);
         category.SaveToFile();
@@ -33,7 +36,25 @@ public abstract class AutomationObserver
         // Optional for derived classes
     }
 
-    public abstract bool ToogleCondition();
+    public virtual bool ShouldExecute()
+    {
+        return IsEnabled;
+    }
 
     public abstract IEnumerator OnNotificationTriggered();
+
+    protected void Log(string message)
+    {
+        MelonLogger.Msg($"[{SectionTitle}] {message}");
+    }
+
+    protected void LogWarning(string message)
+    {
+        MelonLogger.Warning($"[{SectionTitle}] {message}");
+    }
+
+    protected void LogError(string message)
+    {
+        MelonLogger.Error($"[{SectionTitle}] {message}");
+    }
 }

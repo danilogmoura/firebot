@@ -1,27 +1,25 @@
 ﻿using System.Collections;
 using Firebot.Bot.Automation.Core;
 using Firebot.Bot.Component;
-using Firebot.Utils;
 using static Firebot.Utils.Paths.GuildShop;
 
 namespace Firebot.Bot.Automation.GuildShop;
 
 public class FreePickaxesAutomation : AutomationObserver
 {
-    public override string SectionName => "Free Pickaxes";
+    public override string SectionTitle => "Free Pickaxes";
     public override int Priority => 25;
 
-    public override bool ToogleCondition()
+    public override bool ShouldExecute()
     {
-        return Button.Notification.IsActive();
+        return base.ShouldExecute() && Button.Notification.IsActive();
     }
 
     public override IEnumerator OnNotificationTriggered()
     {
         if (!Button.Notification.IsInteractable()) yield break;
 
-        LogManager.SubHeader("Free Pickaxes");
-
+        Log($"{SectionTitle}");
         yield return Button.Notification.Click();
 
         if (Button.FreePickaxeItem.IsInteractable())

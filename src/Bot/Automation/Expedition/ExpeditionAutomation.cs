@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using Firebot.Bot.Automation.Core;
 using Firebot.Bot.Component;
-using Firebot.Utils;
 using MelonLoader;
 using static Firebot.Utils.Paths.Expedition;
 using static Firebot.Utils.StringUtils;
@@ -14,7 +13,7 @@ public class ExpeditionAutomation : AutomationObserver
 
     private MelonPreferences_Entry<bool> _collectRewards;
 
-    public override string SectionName => "Expedition";
+    public override string SectionTitle => "Expedition";
 
     public override int Priority => 80;
 
@@ -24,16 +23,16 @@ public class ExpeditionAutomation : AutomationObserver
         _checkInterval = category.CreateEntry("CheckInterval", 60.0f, "Check Interval (s)", "Check Interval (s)");
     }
 
-    public override bool ToogleCondition()
+    public override bool ShouldExecute()
     {
-        return Button.Notification.IsActive();
+        return base.ShouldExecute() && Button.Notification.IsActive();
     }
 
     public override IEnumerator OnNotificationTriggered()
     {
         if (!Button.Notification.IsActive()) yield break;
 
-        LogManager.SubHeader("Expedition");
+        Log($"{SectionTitle}");
         yield return Button.Notification.Click();
 
         if (Expeditions.CurrentExpedition.IsCompleted())

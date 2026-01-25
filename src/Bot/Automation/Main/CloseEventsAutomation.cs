@@ -9,24 +9,24 @@ using static Firebot.Utils.StringUtils;
 
 namespace Firebot.Bot.Automation.Main;
 
-public class CloseEventsAutomation_Disabled : AutomationObserver
+public class CloseEventsAutomation : AutomationObserver
 {
     private const string CloseButtonPath = "bg/closeButton";
 
     private readonly List<string> _eventsPath = new();
 
-    public override string SectionName => "Close Events";
+    public override string SectionTitle => "Close Events";
 
     public override int Priority => 1;
 
-    public override bool ToogleCondition()
+    public override bool ShouldExecute()
     {
-        return HasActiveEvent();
+        return base.ShouldExecute() && HasActiveEvent();
     }
 
     public override IEnumerator OnNotificationTriggered()
     {
-        LogManager.SubHeader("Close Events");
+        Log($"{SectionTitle}");
         yield return CloseEvents();
     }
 

@@ -1,25 +1,24 @@
 ﻿using System.Collections;
 using Firebot.Bot.Automation.Core;
 using Firebot.Bot.Component;
-using Firebot.Utils;
 using static Firebot.Utils.Paths.WarfrontCampaign;
 
 namespace Firebot.Bot.Automation.Enginneer;
 
 public class WarfrontCampaignAutomation : AutomationObserver
 {
-    public override string SectionName => "Warfront Campaign Scrolls";
+    public override string SectionTitle => "Warfront Campaign Scrolls";
 
-    public override bool ToogleCondition()
+    public override bool ShouldExecute()
     {
-        return Button.Notification.IsActive();
+        return base.ShouldExecute() && Button.Notification.IsActive();
     }
 
     public override IEnumerator OnNotificationTriggered()
     {
         if (!Button.Notification.IsActive()) yield break;
 
-        LogManager.SubHeader("Warfront Campaign Scrolls");
+        Log($"{SectionTitle}");
         yield return Button.Notification.Click();
 
         var claimToolsButton = new ButtonWrapper(ClaimToolsButton);

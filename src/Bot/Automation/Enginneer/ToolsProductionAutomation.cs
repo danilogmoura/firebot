@@ -1,25 +1,24 @@
 using System.Collections;
 using Firebot.Bot.Automation.Core;
 using Firebot.Bot.Component;
-using Firebot.Utils;
 using static Firebot.Utils.Paths.Engineer;
 
 namespace Firebot.Bot.Automation.Enginneer;
 
 public class ToolsProductionAutomation : AutomationObserver
 {
-    public override string SectionName => "Tools Production";
+    public override string SectionTitle => "Tools Production";
 
-    public override bool ToogleCondition()
+    public override bool ShouldExecute()
     {
-        return Button.Notification.IsActive();
+        return base.ShouldExecute() && Button.Notification.IsActive();
     }
 
     public override IEnumerator OnNotificationTriggered()
     {
         if (!Button.Notification.IsActive()) yield break;
 
-        LogManager.SubHeader("Tools Production");
+        Log($"{SectionTitle}");
         yield return Button.Notification.Click();
 
         var caimToolsButton = new ButtonWrapper(ClaimToolsButton);

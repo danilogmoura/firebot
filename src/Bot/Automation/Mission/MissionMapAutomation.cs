@@ -9,148 +9,147 @@ using UnityEngine;
 using static Firebot.Utils.Paths.Missions;
 using static Firebot.Utils.StringUtils;
 
-namespace Firebot.Bot.Automation.Mission
+namespace Firebot.Bot.Automation.Mission;
+
+internal class MissionMapAutomation : AutomationObserver
 {
-    internal class MissionMapAutomation : AutomationObserver
+    private static List<Mission> _missionCache;
+
+    public override string SectionTitle => "Mission Map";
+
+    public override bool ShouldExecute()
     {
-        private static List<Mission> _missionCache;
+        return base.ShouldExecute() && Buttons.Notification.IsActive();
+    }
 
-        public override string SectionName => "Mission Map";
+    public override IEnumerator OnNotificationTriggered()
+    {
+        if (!Buttons.Notification.IsActive()) yield break;
 
-        public override bool ToogleCondition()
+        yield return Buttons.Notification.Click();
+
+        UpdateMissionCache();
+        var isClaimAvailable = _missionCache.Any(mission => mission.IsClaim);
+
+        if (GetSquadCount() <= 0 && !isClaimAvailable)
         {
-            return Buttons.Notification.IsActive();
-        }
-
-        public override IEnumerator OnNotificationTriggered()
-        {
-            if (!Buttons.Notification.IsActive()) yield break;
-
-            yield return Buttons.Notification.Click();
-
-            UpdateMissionCache();
-            var isClaimAvailable = _missionCache.Any(mission => mission.IsClaim);
-
-            if (GetSquadCount() <= 0 && !isClaimAvailable)
-            {
-                yield return Buttons.Close.Click();
-                yield break;
-            }
-
-            LogManager.SubHeader("Map Missions");
-
-            foreach (var mission in _missionCache.Where(mission => mission.IsActive && mission.IsClaim))
-                yield return mission.Click();
-
-            foreach (var mission in _missionCache.OrderByDescending(mission => mission.Time)
-                         .ToList()
-                         .Where(mission => !mission.IsActive && GetSquadCount() > 0))
-            {
-                yield return mission.Click();
-                yield return Buttons.Start.Click();
-            }
-
             yield return Buttons.Close.Click();
+            yield break;
         }
 
-        private static int GetSquadCount()
+        Log($"{SectionTitle}");
+
+        foreach (var mission in _missionCache.Where(mission => mission.IsActive && mission.IsClaim))
+            yield return mission.Click();
+
+        foreach (var mission in _missionCache.OrderByDescending(mission => mission.Time)
+                     .ToList()
+                     .Where(mission => !mission.IsActive && GetSquadCount() > 0))
         {
-            return new SquadsCountUGUIWrapper().Values.current;
+            yield return mission.Click();
+            yield return Buttons.Start.Click();
         }
 
-        private static void UpdateMissionCache()
+        yield return Buttons.Close.Click();
+    }
+
+    private static int GetSquadCount()
+    {
+        return new SquadsCountUGUIWrapper().Values.current;
+    }
+
+    private static void UpdateMissionCache()
+    {
+        _missionCache = new List<Mission>();
+
+        var missionsContainer = new ObjectWrapper(MissionRegion);
+        var regionsRoot = missionsContainer.Transform;
+
+        if (regionsRoot == null) return;
+
+        for (var i = 0; i < regionsRoot.childCount; i++)
         {
-            _missionCache = new List<Mission>();
+            var region = regionsRoot.GetChild(i);
 
-            var missionsContainer = new ObjectWrapper(MissionRegion);
-            var regionsRoot = missionsContainer.Transform;
-
-            if (regionsRoot == null) return;
-
-            for (var i = 0; i < regionsRoot.childCount; i++)
+            for (var j = 0; j < region.childCount; j++)
             {
-                var region = regionsRoot.GetChild(i);
+                var mission = region.GetChild(j);
+                if (!mission.gameObject.activeInHierarchy) continue;
 
-                for (var j = 0; j < region.childCount; j++)
-                {
-                    var mission = region.GetChild(j);
-                    if (!mission.gameObject.activeInHierarchy) continue;
-
-                    _missionCache.Add(new Mission(region.name, mission.name));
-                }
+                _missionCache.Add(new Mission(region.name, mission.name));
             }
         }
+    }
 
-        private readonly struct Mission
+    private readonly struct Mission
+    {
+        private readonly SpriteRendererWrapper _activeIconWrapper;
+        private readonly SpriteRendererWrapper _completedTickWrapper;
+        private readonly MapMissionInteractionWrapper _missionInteractionWrapper;
+
+        public readonly string Name;
+        public readonly string Region;
+        public readonly int Time;
+
+        public Mission(string missionRegion, string missionName)
         {
-            private readonly SpriteRendererWrapper _activeIconWrapper;
-            private readonly SpriteRendererWrapper _completedTickWrapper;
-            private readonly MapMissionInteractionWrapper _missionInteractionWrapper;
+            Region = missionRegion;
+            Name = missionName;
 
-            public readonly string Name;
-            public readonly string Region;
-            public readonly int Time;
+            _activeIconWrapper =
+                new SpriteRendererWrapper(JoinPath(MissionRegion, Region, Name, "missionActiveIcon"));
 
-            public Mission(string missionRegion, string missionName)
-            {
-                Region = missionRegion;
-                Name = missionName;
+            _completedTickWrapper =
+                new SpriteRendererWrapper(JoinPath(MissionRegion, Region, Name, "missionBg/completedTick"));
 
-                _activeIconWrapper =
-                    new SpriteRendererWrapper(JoinPath(MissionRegion, Region, Name, "missionActiveIcon"));
+            _missionInteractionWrapper = new MapMissionInteractionWrapper(JoinPath(MissionRegion, Region, Name));
 
-                _completedTickWrapper =
-                    new SpriteRendererWrapper(JoinPath(MissionRegion, Region, Name, "missionBg/completedTick"));
-
-                _missionInteractionWrapper = new MapMissionInteractionWrapper(JoinPath(MissionRegion, Region, Name));
-
-                Time = new TimeDisplay(JoinPath(MissionRegion, Region, Name, "missionBg/missionTimeBg/missionTimeReq"))
-                    .ParseToSeconds();
-            }
-
-            public bool IsActive => _activeIconWrapper.Enabled();
-            public bool IsClaim => _completedTickWrapper.Enabled();
-
-            public IEnumerator Click()
-            {
-                _missionInteractionWrapper?.OnClick();
-                yield return new WaitForSeconds(BotSettings.InteractionDelay.Value);
-            }
+            Time = new TimeDisplay(JoinPath(MissionRegion, Region, Name, "missionBg/missionTimeBg/missionTimeReq"))
+                .ParseToSeconds();
         }
 
-        private class SquadsCountUGUIWrapper : TextMeshProUGUIWrapper
+        public bool IsActive => _activeIconWrapper.Enabled();
+        public bool IsClaim => _completedTickWrapper.Enabled();
+
+        public IEnumerator Click()
         {
-            public SquadsCountUGUIWrapper() : base(SquadsQuantity)
-            {
-            }
+            _missionInteractionWrapper?.OnClick();
+            yield return new WaitForSeconds(BotSettings.InteractionDelay.Value);
+        }
+    }
 
-            public (int current, int total) Values => ParseValues();
-
-            private (int current, int total) ParseValues()
-            {
-                var text = GetParsedText();
-                if (string.IsNullOrEmpty(text)) return (0, 0);
-
-                var slashIndex = text.IndexOf('/');
-                if (slashIndex == -1) return (0, 0);
-
-                var part1 = text.Substring(0, slashIndex);
-                var part2 = text.Substring(slashIndex + 1);
-
-                int.TryParse(part1, out var curr);
-                int.TryParse(part2, out var tot);
-
-                return (curr, tot);
-            }
+    private class SquadsCountUGUIWrapper : TextMeshProUGUIWrapper
+    {
+        public SquadsCountUGUIWrapper() : base(SquadsQuantity)
+        {
         }
 
-        private static class Buttons
+        public (int current, int total) Values => ParseValues();
+
+        private (int current, int total) ParseValues()
         {
-            public static readonly ButtonWrapper Start = new ButtonWrapper(StartMissionButton);
+            var text = GetParsedText();
+            if (string.IsNullOrEmpty(text)) return (0, 0);
 
-            public static readonly ButtonWrapper Notification = new ButtonWrapper(MapMissionNotification);
+            var slashIndex = text.IndexOf('/');
+            if (slashIndex == -1) return (0, 0);
 
-            public static readonly ButtonWrapper Close = new ButtonWrapper(MissionCloseButton);
+            var part1 = text.Substring(0, slashIndex);
+            var part2 = text.Substring(slashIndex + 1);
+
+            int.TryParse(part1, out var curr);
+            int.TryParse(part2, out var tot);
+
+            return (curr, tot);
         }
+    }
+
+    private static class Buttons
+    {
+        public static readonly ButtonWrapper Start = new(StartMissionButton);
+
+        public static readonly ButtonWrapper Notification = new(MapMissionNotification);
+
+        public static readonly ButtonWrapper Close = new(MissionCloseButton);
     }
 }

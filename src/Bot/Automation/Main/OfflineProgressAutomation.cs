@@ -4,24 +4,23 @@ using Firebot.Bot.Component;
 using Firebot.Utils;
 using static Firebot.Utils.Paths.BattleRoot;
 
-namespace Firebot.Bot.Automation.Main
+namespace Firebot.Bot.Automation.Main;
+
+internal class OfflineProgressAutomation : AutomationObserver
 {
-    internal class OfflineProgressAutomation : AutomationObserver
+    private static readonly ObjectWrapper Popup = new(OfflineProgressPopup);
+    private static readonly ButtonWrapper ClaimButton = new(OfflineProgressPopupClaimButton);
+
+    public override string SectionTitle => "Offline Progress";
+
+    public override bool ShouldExecute()
     {
-        private static readonly ObjectWrapper Popup = new ObjectWrapper(OfflineProgressPopup);
-        private static readonly ButtonWrapper ClaimButton = new ButtonWrapper(OfflineProgressPopupClaimButton);
+        return base.ShouldExecute() && Popup.IsActive();
+    }
 
-        public override string SectionName => "Offline Progress";
-
-        public override bool ToogleCondition()
-        {
-            return Popup.IsActive();
-        }
-
-        public override IEnumerator OnNotificationTriggered()
-        {
-            LogManager.SubHeader("Offline Progress");
-            yield return ClaimButton.Click();
-        }
+    public override IEnumerator OnNotificationTriggered()
+    {
+        Log($"{SectionTitle}");
+        yield return ClaimButton.Click();
     }
 }
