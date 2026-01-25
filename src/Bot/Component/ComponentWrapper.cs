@@ -1,37 +1,39 @@
-﻿namespace Firebot.Bot.Component
+﻿namespace Firebot.Bot.Component;
+
+internal abstract class ComponentWrapper<T> : MappedObjectBase where T : UnityEngine.Component
 {
-    internal abstract class ComponentWrapper<T> : MappedObjectBase where T : UnityEngine.Component
+    private T _componentCached;
+
+    protected ComponentWrapper(string path) : base(path)
     {
-        private T _componentCached;
+    }
 
-        protected ComponentWrapper(string path) : base(path)
+    protected T ComponentCached
+    {
+        get
         {
-        }
-
-        protected T ComponentCached
-        {
-            get
+            return ExecuteSafe(() =>
             {
                 if (_componentCached != null) return _componentCached;
                 if (CachedTransform != null) _componentCached = CachedTransform.GetComponent<T>();
                 return _componentCached;
-            }
+            });
         }
+    }
 
-        public new void InvalidateCache()
-        {
-            base.InvalidateCache();
-            _componentCached = null;
-        }
+    public new void InvalidateCache()
+    {
+        base.InvalidateCache();
+        _componentCached = null;
+    }
 
-        public bool HasComponent()
-        {
-            return ComponentCached != null;
-        }
+    public bool HasComponent()
+    {
+        return ComponentCached != null;
+    }
 
-        public T Get()
-        {
-            return ComponentCached;
-        }
+    public T Get()
+    {
+        return ComponentCached;
     }
 }
