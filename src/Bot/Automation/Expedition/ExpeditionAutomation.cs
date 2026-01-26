@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using Firebot.Bot.Automation.Core;
 using Firebot.Bot.Component;
-using MelonLoader;
 using static Firebot.Utils.Paths.Expedition;
 using static Firebot.Utils.StringUtils;
 
@@ -9,24 +8,11 @@ namespace Firebot.Bot.Automation.Expedition;
 
 public class ExpeditionAutomation : AutomationObserver
 {
-    private MelonPreferences_Entry<float> _checkInterval;
-
-    private MelonPreferences_Entry<bool> _collectRewards;
-
     public override string SectionTitle => "Expedition";
 
     public override int Priority => 80;
 
-    protected override void OnConfigure(MelonPreferences_Category category)
-    {
-        _collectRewards = category.CreateEntry("AutoCollect", true, "Auto Collect Rewards", "Auto Collect Rewards");
-        _checkInterval = category.CreateEntry("CheckInterval", 60.0f, "Check Interval (s)", "Check Interval (s)");
-    }
-
-    public override bool ShouldExecute()
-    {
-        return base.ShouldExecute() && Button.Notification.IsActive();
-    }
+    public override bool ShouldExecute() => base.ShouldExecute() && Button.Notification.IsActive();
 
     public override IEnumerator OnNotificationTriggered()
     {
@@ -59,22 +45,9 @@ public class ExpeditionAutomation : AutomationObserver
     {
         private readonly ButtonWrapper _claimButton = new(JoinPath(CurrentExpeditionPath, "claimButton"));
 
-        public CurrentExpeditionSection() : base(CurrentExpeditionPath)
-        {
-        }
+        public CurrentExpeditionSection() : base(CurrentExpeditionPath) { }
 
-        public bool IsCompleted()
-        {
-            var timeLabel =
-                new TextMeshProUGUIWrapper(JoinPath(CurrentExpeditionPath, "expeditionProgressBg/timeLeftText"));
-
-            if (!IsActive() && !timeLabel.Exists()) return false;
-
-            var text = timeLabel.GetParsedText();
-
-            //TODO: find better way to check completion
-            return text.Contains("Completed");
-        }
+        public bool IsCompleted() => _claimButton.IsInteractable();
 
         public IEnumerator CollectRewards()
         {
@@ -86,9 +59,7 @@ public class ExpeditionAutomation : AutomationObserver
     {
         private readonly ButtonWrapper _startButton = new(JoinPath(PendingExpeditionPath, "startButton"));
 
-        public PendingExpeditionSection() : base(PendingExpeditionPath)
-        {
-        }
+        public PendingExpeditionSection() : base(PendingExpeditionPath) { }
 
         public IEnumerator StartExpedition()
         {
