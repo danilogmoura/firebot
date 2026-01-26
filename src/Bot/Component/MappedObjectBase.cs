@@ -29,8 +29,7 @@ internal abstract class MappedObjectBase
         }
     }
 
-    private void FindAndCacheTransform()
-    {
+    private void FindAndCacheTransform() =>
         ExecuteSafe(() =>
         {
             if (string.IsNullOrEmpty(_path)) return;
@@ -49,7 +48,6 @@ internal abstract class MappedObjectBase
             if (_cachedTransform != null)
                 LogManager.Debug("MapSuccess", $"{ObjectName}: Cached {_path}");
         });
-    }
 
     protected void ExecuteSafe(Action action, [CallerMemberName] string actionName = null)
     {
@@ -78,33 +76,13 @@ internal abstract class MappedObjectBase
         }
     }
 
-    public void InvalidateCache()
-    {
-        _cachedTransform = null;
-    }
+    public bool Exists() => CachedTransform != null;
 
-    public bool Exists()
-    {
-        return CachedTransform != null;
-    }
+    public bool IsActive() => CachedTransform != null && CachedTransform.gameObject.activeInHierarchy;
 
-    public bool IsActive()
-    {
-        return CachedTransform != null && CachedTransform.gameObject.activeInHierarchy;
-    }
+    public bool HasChilden() => IsActive() && ExecuteSafe(() => CachedTransform.childCount > 0);
 
-    public bool HasChilden()
-    {
-        return IsActive() && ExecuteSafe(() => CachedTransform.childCount > 0);
-    }
+    public int? ChildCount() => ExecuteSafe(() => CachedTransform?.childCount);
 
-    public int? ChildCount()
-    {
-        return ExecuteSafe(() => CachedTransform?.childCount);
-    }
-
-    public Transform GetChild(int level)
-    {
-        return ExecuteSafe(() => CachedTransform?.GetChild(level));
-    }
+    public Transform GetChild(int level) => ExecuteSafe(() => CachedTransform?.GetChild(level));
 }
