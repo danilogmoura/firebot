@@ -2,5 +2,5 @@
 
 internal class TextMeshProWrapper : BaseTextWrapper<Il2CppTMPro.TextMeshPro>
 {
-    protected TextMeshProWrapper(string path) : base(path) { }
+    public TextMeshProWrapper(string path) : base(path) { }
 }

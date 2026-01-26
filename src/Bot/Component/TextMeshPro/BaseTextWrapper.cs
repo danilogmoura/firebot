@@ -1,0 +1,16 @@
+﻿using Il2CppTMPro;
+using UniverseLib.Utility;
+
+namespace Firebot.Bot.Component.TextMeshPro;
+
+internal class BaseTextWrapper<T> : ComponentWrapper<T> where T : TMP_Text
+{
+    protected BaseTextWrapper(string path) : base(path) { }
+
+    public string Text => GetText();
+
+    private string GetText() => ExecuteSafe(() => ComponentCached?.GetParsedText() ?? string.Empty);
+
+    public bool Contains(string textToCheck) =>
+        !string.IsNullOrEmpty(Text) && Text.Trim().ContainsIgnoreCase(textToCheck.Trim());
+}

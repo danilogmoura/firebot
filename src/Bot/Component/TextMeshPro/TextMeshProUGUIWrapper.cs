@@ -4,5 +4,5 @@ namespace Firebot.Bot.Component.TextMeshPro;
 
 internal class TextMeshProUGUIWrapper : BaseTextWrapper<TextMeshProUGUI>
 {
-    protected TextMeshProUGUIWrapper(string path) : base(path) { }
+    public TextMeshProUGUIWrapper(string path) : base(path) { }
 }
