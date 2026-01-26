@@ -11,20 +11,11 @@ public static class LogManager
     private const ConsoleColor ErrorColor = ConsoleColor.Red;
     private const ConsoleColor DebugColor = ConsoleColor.Blue;
 
-    public static void Info(string section, string message)
-    {
-        MelonLogger.Msg(TextColor, $"[{section}] {message}");
-    }
+    public static void Info(string section, string message) => MelonLogger.Msg(TextColor, $"[{section}] {message}");
 
-    public static void Warning(string section, string message)
-    {
-        MelonLogger.Warning($"[{section}] {message}");
-    }
+    public static void Warning(string section, string message) => MelonLogger.Warning($"[{section}] {message}");
 
-    public static void Error(string section, string message)
-    {
-        MelonLogger.Error($"[{section}] {message}");
-    }
+    public static void Error(string section, string message) => MelonLogger.Error($"[{section}] {message}");
 
     public static void Debug(string section, string message)
     {
