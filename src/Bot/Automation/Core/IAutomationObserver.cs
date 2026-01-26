@@ -1,7 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using Firebot.Utils;
 using MelonLoader;
 using UnityEngine;
+using static Firebot.Core.BotSettings;
 
 namespace Firebot.Bot.Automation.Core;
 
@@ -43,8 +45,13 @@ public abstract class AutomationObserver
         }
 
         _nextExecutionTime = Time.time + (secondsRemaining - offsetSeconds);
-        LogDebug($"Próxima execução agendada para daqui a {secondsRemaining - offsetSeconds}s " +
-                 $"(quando o timer da UI zerar)");
+
+        if (DebugMode)
+        {
+            var t = TimeSpan.FromSeconds(secondsRemaining);
+            var formatted = string.Format("{0:D2}h {1:D2}m {2:D2}s", t.Hours, t.Minutes, t.Seconds);
+            LogDebug($"Next execution scheduled in {formatted} ({secondsRemaining}s) (when the UI timer reaches zero)");
+        }
     }
 
     protected void ResetSchedule() => _nextExecutionTime = -1;
