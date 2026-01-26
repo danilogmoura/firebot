@@ -7,22 +7,13 @@ namespace Firebot.Bot.Component;
 
 internal class ButtonWrapper : ComponentWrapper<Button>
 {
-    public ButtonWrapper(string path) : base(path)
-    {
-    }
+    public ButtonWrapper(string path) : base(path) { }
 
-    public bool IsInteractable()
-    {
-        return IsActive() && HasComponent() && ComponentCached.enabled && ComponentCached.interactable;
-    }
+    public bool IsInteractable() => IsActive() && ComponentCached.enabled && ComponentCached.interactable;
 
+    public IEnumerator Click() => Click(BotSettings.InteractionDelay);
 
-    public IEnumerator Click()
-    {
-        return Click(BotSettings.InteractionDelay);
-    }
-
-    public IEnumerator Click(float delay)
+    private IEnumerator Click(float delay)
     {
         if (!IsInteractable())
             yield break;
