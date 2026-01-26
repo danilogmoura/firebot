@@ -54,8 +54,8 @@
         <Reference Include="UnityEngine.UIModule">
             <HintPath>$(Il2CppAssembliesDir)\UnityEngine.UIModule.dll</HintPath>
         </Reference>
-        <Reference Include="UniverseLib.ML.IL2CPP.Interop">
-            <HintPath>$(UniverseLibDir)\UniverseLib.ML.IL2CPP.Interop.dll</HintPath>
+        <Reference Include="UniverseLib.MelonLoader.IL2CPP">
+            <HintPath>$(UniverseLibDir)\UniverseLib.MelonLoader.IL2CPP.dll</HintPath>
         </Reference>
     </ItemGroup>
 
@@ -67,7 +67,7 @@
               Condition="Exists('$(ModsDir)')"
               SkipUnchangedFiles="true"/>
 
-        <Copy SourceFiles="$(ProjectDir)..\libs\UniverseLib\UniverseLib.ML.IL2CPP.Interop.dll"
+        <Copy SourceFiles="$(ProjectDir)..\libs\UniverseLib\UniverseLib.MelonLoader.IL2CPP.dll"
               DestinationFolder="$(UserLibs)"
               Condition="Exists('$(UserLibs)')"
               SkipUnchangedFiles="true"/>
