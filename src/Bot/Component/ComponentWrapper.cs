@@ -10,11 +10,9 @@ internal abstract class ComponentWrapper<T> : MappedObjectBase where T : UnityEn
         ExecuteSafe(() =>
         {
             if (_componentCached != null) return _componentCached;
-            if (CachedTransform != null) _componentCached = CachedTransform.GetComponent<T>();
+            CachedTransform.TryGetComponent(out _componentCached);
             return _componentCached;
         });
 
-    public bool HasComponent() => ComponentCached != null;
-
-    public T Get() => ComponentCached;
+    protected override bool Exists() => base.Exists() && CachedTransform != null;
 }

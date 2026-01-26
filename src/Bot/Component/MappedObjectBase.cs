@@ -71,7 +71,7 @@ internal abstract class MappedObjectBase
         }
     }
 
-    public bool Exists() => CachedTransform != null;
+    protected virtual bool Exists() => CachedTransform != null;
 
     public bool IsActive() => Exists() && CachedTransform.gameObject.activeInHierarchy;
 
