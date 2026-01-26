@@ -4,36 +4,17 @@ internal abstract class ComponentWrapper<T> : MappedObjectBase where T : UnityEn
 {
     private T _componentCached;
 
-    protected ComponentWrapper(string path) : base(path)
-    {
-    }
+    protected ComponentWrapper(string path) : base(path) { }
 
-    protected T ComponentCached
-    {
-        get
+    protected T ComponentCached =>
+        ExecuteSafe(() =>
         {
-            return ExecuteSafe(() =>
-            {
-                if (_componentCached != null) return _componentCached;
-                if (CachedTransform != null) _componentCached = CachedTransform.GetComponent<T>();
-                return _componentCached;
-            });
-        }
-    }
+            if (_componentCached != null) return _componentCached;
+            if (CachedTransform != null) _componentCached = CachedTransform.GetComponent<T>();
+            return _componentCached;
+        });
 
-    public new void InvalidateCache()
-    {
-        base.InvalidateCache();
-        _componentCached = null;
-    }
+    public bool HasComponent() => ComponentCached != null;
 
-    public bool HasComponent()
-    {
-        return ComponentCached != null;
-    }
-
-    public T Get()
-    {
-        return ComponentCached;
-    }
+    public T Get() => ComponentCached;
 }
