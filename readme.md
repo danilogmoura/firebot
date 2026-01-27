@@ -31,7 +31,7 @@ If you want to use the pre-built mod, follow these steps:
 3. Make sure [MelonLoader Nightly V0.7.2+](https://github.com/LavaGang/MelonLoader) is installed in your game.
 4. Start the game normally. Firebot will be loaded automatically by MelonLoader.
 
-> **Tip:** By default, you can start or stop the bot at any time by pressing the **F7** key during gameplay.
+By default, press **F7** to start or stop the bot during gameplay.
 
 ---
 
@@ -61,7 +61,7 @@ If you want to use the pre-built mod, follow these steps:
 
 The bot configuration file can be found at `Firestone/UserData/FirebotPreferences.cfg`.
 
-The default key to manually toggle the bot is **F7**. You can change this by editing the `shortcut_key` option in the configuration file.
+Default toggle key: **F7** (changeable via `shortcut_key`).
 
 For now, all configuration must be done directly in this file. A graphical configuration interface will be implemented in the future.
 
