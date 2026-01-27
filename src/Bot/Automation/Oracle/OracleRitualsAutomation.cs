@@ -11,8 +11,6 @@ public class OracleRitualsAutomation : AutomationObserver
 {
     private static readonly List<Ritual> RitualsCache = new();
 
-    public override string SectionTitle => "Oracle Rituals";
-
     public override bool ShouldExecute() => base.ShouldExecute() && Buttons.Notification.IsActive();
 
     public override IEnumerator OnNotificationTriggered()
@@ -44,7 +42,7 @@ public class OracleRitualsAutomation : AutomationObserver
         var rituals = ritualRoot.GetChildren();
         foreach (var ritual in rituals)
         {
-            if (ritual.IsActive() || ritual.Find("locked").IsActive() ||
+            if (!ritual.IsActive() || ritual.Find("locked").IsActive() ||
                 ritual.Find("claimedObj").IsActive()) continue;
 
             var nodeName = ritual.Name;

@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using Firebot.Bot.Automation.Core;
 using Firebot.Bot.Component;
+using Firebot.Core;
+using UnityEngine;
 using static Firebot.Utils.Paths.GuardianTraining;
 using static Firebot.Utils.StringUtils;
 
@@ -44,6 +46,8 @@ public class GuardianTrainingAutomation : AutomationObserver
         }
 
         yield return Button.Close.Click();
+
+        yield return new WaitForSeconds(BotSettings.InteractionDelay);
     }
 
     private static class Button

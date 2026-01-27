@@ -47,11 +47,10 @@ public class CloseEventPromotionalAutomation : AutomationObserver
             Log.Info($"Target event found: {eventName}. Closing and disabling automation.");
 
             yield return popup.CloseButton.Click();
-
-            _hasExecutedSuccessfully = true;
-
-            yield return new WaitForSeconds(InteractionDelay);
         }
+
+        _hasExecutedSuccessfully = true;
+        yield return new WaitForSeconds(InteractionDelay);
     }
 
     private class PopupWrapper : ComponentWrapper<Transform>
