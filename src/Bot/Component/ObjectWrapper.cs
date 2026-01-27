@@ -1,15 +1,30 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Collections.Generic;
+using UnityEngine;
+using static Firebot.Utils.StringUtils;
 
-namespace Firebot.Bot.Component
+namespace Firebot.Bot.Component;
+
+internal class ObjectWrapper : ComponentWrapper<Transform>
 {
-    internal class ObjectWrapper : MappedObjectBase
+    public ObjectWrapper(string path) : base(path) { }
+
+    public List<ObjectWrapper> GetChildren() => ExecuteSafe(() =>
     {
-        public ObjectWrapper(string path) : base(path)
+        var children = new List<ObjectWrapper>();
+        for (var i = 0; i < ChildCount(); i++)
         {
+            var child = GetChild(i);
+            children.Add(new ObjectWrapper(JoinPath(Path, child.name)));
         }
 
-        public GameObject GameObject => CachedTransform?.gameObject;
+        return children;
+    });
 
-        public Transform Transform => CachedTransform;
-    }
+    public ObjectWrapper Find(string path) => ExecuteSafe(() =>
+    {
+        var transform = ComponentCached.Find(path);
+        if (transform == null) throw new InvalidOperationException("Child not found: " + path);
+        return new ObjectWrapper(JoinPath(Path, path));
+    });
 }

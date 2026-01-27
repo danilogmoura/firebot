@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using Firebot.Bot.Automation.Core;
 using Firebot.Bot.Component;
-using Firebot.Utils;
 using static Firebot.Utils.Paths.GuardianTraining;
 using static Firebot.Utils.StringUtils;
 
@@ -11,10 +10,7 @@ public class GuardianTrainingAutomation : AutomationObserver
 {
     public override string SectionTitle => "Guardian Training";
 
-    public override bool ShouldExecute()
-    {
-        return base.ShouldExecute() && Button.Notification.IsActive();
-    }
+    public override bool ShouldExecute() => base.ShouldExecute() && Button.Notification.IsActive();
 
     public override IEnumerator OnNotificationTriggered()
     {
@@ -31,20 +27,20 @@ public class GuardianTrainingAutomation : AutomationObserver
             yield break;
         }
 
-        var guardianList = new ObjectWrapper(GuardianList).Transform;
-        for (var i = 0; i < guardianList.childCount; i++)
-        {
-            var guardianRoot = guardianList.GetChild(i);
-            var starsParent = guardianRoot.Find("starsParent");
 
+        var guardians = new ObjectWrapper(GuardianList).GetChildren();
+
+        foreach (var guardianRoot in guardians)
+        {
+            var starsParent = guardianRoot.Find("starsParent");
             if (Object.CooldownOn.IsActive()) break;
 
             if (Button.Training != null &&
-                (!starsParent.gameObject.activeSelf || !Button.Training.IsInteractable())) continue;
+                (!starsParent.IsActive() || !Button.Training.IsInteractable())) continue;
 
             yield return Button.Training?.Click();
 
-            yield return new ButtonWrapper(JoinPath(GuardianList, guardianRoot.name)).Click();
+            yield return new ButtonWrapper(JoinPath(GuardianList, guardianRoot.Name)).Click();
         }
 
         yield return Button.Close.Click();
@@ -53,16 +49,13 @@ public class GuardianTrainingAutomation : AutomationObserver
     private static class Button
     {
         public static readonly ButtonWrapper Notification = new(GuardianTrainingNotification);
-
         public static readonly ButtonWrapper Close = new(CloseButton);
-
         public static readonly ButtonWrapper Training = new(TrainingButton);
     }
 
     private readonly struct Object
     {
         public static readonly ObjectWrapper CooldownOn = new(JoinPath(TrainingButton, "cooldownOn"));
-
         public static readonly ObjectWrapper Panel = new(MenuMagicQuarters);
     }
 }

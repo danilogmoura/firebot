@@ -6,6 +6,7 @@ using Firebot.Bot.Component;
 using Firebot.Bot.Component.TextMeshPro;
 using Firebot.Core;
 using UnityEngine;
+using static System.Int32;
 using static Firebot.Utils.Paths.Missions;
 using static Firebot.Utils.StringUtils;
 
@@ -14,8 +15,6 @@ namespace Firebot.Bot.Automation.Mission;
 internal class MissionMapAutomation : AutomationObserver
 {
     private static List<Mission> _missionCache;
-
-    public override string SectionTitle => "Mission Map";
 
     public override bool ShouldExecute() => base.ShouldExecute() && Buttons.Notification.IsActive();
 
@@ -48,27 +47,25 @@ internal class MissionMapAutomation : AutomationObserver
         yield return Buttons.Close.Click();
     }
 
-    private static int GetSquadCount() => new SquadsCountUGUIWrapper().Values.current;
+    private int GetSquadCount() => new SquadsCountUGUIWrapper().Values.current;
 
-    private static void UpdateMissionCache()
+    private void UpdateMissionCache()
     {
         _missionCache = new List<Mission>();
 
         var missionsContainer = new ObjectWrapper(MissionRegion);
-        var regionsRoot = missionsContainer.Transform;
 
-        if (regionsRoot == null) return;
+        if (!missionsContainer.Exists()) return;
 
-        for (var i = 0; i < regionsRoot.childCount; i++)
+        var children = missionsContainer.GetChildren();
+
+        foreach (var region in children)
         {
-            var region = regionsRoot.GetChild(i);
-
-            for (var j = 0; j < region.childCount; j++)
+            var missions = region.GetChildren();
+            foreach (var mission in missions.Where(mission => mission.IsActive()))
             {
-                var mission = region.GetChild(j);
-                if (!mission.gameObject.activeInHierarchy) continue;
-
-                _missionCache.Add(new Mission(region.name, mission.name));
+                _missionCache.Add(new Mission(region.Name, mission.Name));
+                Log.Debug($" Found mission: {region.Name} - {mission.Name}");
             }
         }
     }
@@ -127,8 +124,8 @@ internal class MissionMapAutomation : AutomationObserver
             var part1 = text.Substring(0, slashIndex);
             var part2 = text.Substring(slashIndex + 1);
 
-            int.TryParse(part1, out var curr);
-            int.TryParse(part2, out var tot);
+            TryParse(part1, out var curr);
+            TryParse(part2, out var tot);
 
             return (curr, tot);
         }
@@ -137,9 +134,7 @@ internal class MissionMapAutomation : AutomationObserver
     private static class Buttons
     {
         public static readonly ButtonWrapper Start = new(StartMissionButton);
-
         public static readonly ButtonWrapper Notification = new(MapMissionNotification);
-
         public static readonly ButtonWrapper Close = new(MissionCloseButton);
     }
 }

@@ -3,14 +3,11 @@ using System.Collections;
 using Firebot.Core;
 using UnityEngine;
 using UnityEngine.UI;
-using Logger = Firebot.Utils.Logger;
 
 namespace Firebot.Bot.Component;
 
 internal class ButtonWrapper : ComponentWrapper<Button>
 {
-    private static readonly Logger Log = new(nameof(ButtonWrapper));
-
     public ButtonWrapper(string path) : base(path) { }
 
     public bool IsInteractable() => IsActive() && ComponentCached.enabled && ComponentCached.interactable;

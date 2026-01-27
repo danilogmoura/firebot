@@ -13,58 +13,51 @@ namespace Firebot.Bot.Automation.Main;
 
 public class CloseEventPromotionalAutomation : AutomationObserver
 {
-    // Path to the events popup root and its closed state
-    private readonly Dictionary<string, bool> _eventsPopup = new()
+    private static readonly HashSet<string> TargetEvents = new()
     {
-        { "AnniversaryEventPromotional", true },
-        { "DecoratedHeroesPromotion", true }
+        "AnniversaryEventPromotional",
+        "DecoratedHeroesPromotion"
     };
+
+    private bool _hasExecutedSuccessfully;
 
     public override int Priority => 25;
 
-    public override bool ShouldExecute() => base.ShouldExecute() && _eventsPopup.Any();
+    public override bool ShouldExecute() => base.ShouldExecute() && !_hasExecutedSuccessfully;
 
     public override IEnumerator OnNotificationTriggered()
     {
-        var events = new ObjectWrapper(EventsPopupPath);
+        var rootEvents = new ObjectWrapper(EventsPopupPath);
+        if (!rootEvents.IsActive() || !rootEvents.HasChildren()) yield break;
 
-        if (!events.IsActive() || !events.HasChildren()) yield return new WaitForSeconds(InteractionDelay);
+        var activeTargets = rootEvents.GetChildren().Where(child =>
+                child.IsActive() && TargetEvents.Contains(child.Name))
+            .ToList();
 
-        for (var i = 0; i < events.ChildCount(); i++)
+        foreach (var eventFolder in activeTargets)
         {
-            var eventFolder = events.GetChild(i);
-            if (!eventFolder.gameObject.activeInHierarchy) continue;
+            var eventName = eventFolder.Name;
+            var popupPath = JoinPath(EventsPopupPath, eventName);
+            var popup = new PopupWrapper(popupPath);
 
-            var eventFolderName = eventFolder.name;
-            var popupWrapper = new PopupWrapper(JoinPath(EventsPopupPath, eventFolderName));
+            Log.Debug($"Event: {eventName} ({popup.TitleText.Text})");
 
-            if (!popupWrapper.IsActive()) continue;
+            if (!popup.IsActive()) continue;
 
-            var titleTextText = popupWrapper.TitleText.Text;
-            Log.Debug(
-                $"[{i + 1}/{events.ChildCount()}] Event found: name=\"{eventFolderName}\", title=\"{titleTextText}\"");
+            Log.Info($"Target event found: {eventName}. Closing and disabling automation.");
 
-            if (!_eventsPopup.ContainsKey(eventFolderName) || !_eventsPopup[eventFolderName])
-            {
-                _eventsPopup[eventFolderName] = false;
-                continue;
-            }
+            yield return popup.CloseButton.Click();
 
-            yield return popupWrapper.CloseButton.Click();
-            _eventsPopup[eventFolderName] = popupWrapper.IsActive();
+            _hasExecutedSuccessfully = true;
 
-            Log.Debug($"Closed event popup: name=\"{eventFolderName}\", title=\"{titleTextText}\"");
+            yield return new WaitForSeconds(InteractionDelay);
         }
-
-        _eventsPopup.Clear();
     }
 
     private class PopupWrapper : ComponentWrapper<Transform>
     {
         public PopupWrapper(string path) : base(path) { }
-
         public ButtonWrapper CloseButton => new(JoinPath(Path, "bg/closeButton"));
-
         public TextUI TitleText => new(JoinPath(Path, "bg/titleBg/menuTitle"));
     }
 }

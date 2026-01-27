@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Linq;
 using Firebot.Bot.Automation.Core;
 using Firebot.Bot.Component;
 using UnityEngine;
@@ -9,12 +10,7 @@ namespace Firebot.Bot.Automation.Library;
 
 internal class FirestoneResearchAutomation : AutomationObserver
 {
-    public override string SectionTitle => "Firestone Research";
-
-    public override bool ShouldExecute()
-    {
-        return base.ShouldExecute() && Buttons.Notification.IsActive();
-    }
+    public override bool ShouldExecute() => base.ShouldExecute() && Buttons.Notification.IsActive();
 
     public override IEnumerator OnNotificationTriggered()
     {
@@ -31,18 +27,18 @@ internal class FirestoneResearchAutomation : AutomationObserver
         if (Panel.Slot1.IsActive() && Buttons.ButtonClainSlot1.IsInteractable())
             yield return Buttons.ButtonClainSlot1.Click();
 
-        var submenusTransform = Panel.SubmenusWrapper.Transform;
+        var submenus = Panel.SubmenusWrapper.GetChildren();
 
-        for (var i = 0; i < submenusTransform.childCount; i++)
+        foreach (var tree in submenus)
         {
-            var tree = submenusTransform.GetChild(i);
-            if (!tree.name.StartsWith("tree") || !tree.gameObject.activeInHierarchy) continue;
+            if (!tree.Name.StartsWith("tree") || !tree.IsActive()) continue;
 
-            for (var j = 0; j < tree.childCount; j++)
+            var slots = tree.GetChildren();
+
+            foreach (var slot in slots
+                         .Where(slot => slot.IsActive() && Panel.SelectResearch.IsActive()))
             {
-                var slot = new ResearchSlotWrapper(tree.GetChild(j));
-                if (!slot.IsValid() || !Panel.SelectResearch.IsActive()) continue;
-                yield return OpenPopup(JoinPath(SubmenusTreePath, tree.name, slot.Name));
+                yield return OpenPopup(JoinPath(SubmenusTreePath, tree.Name, slot.Name));
 
                 if (Panel.SubmenusWrapper.IsActive() && Buttons.StartResearch.IsInteractable())
                     yield return Buttons.StartResearch.Click();
@@ -87,11 +83,8 @@ internal class FirestoneResearchAutomation : AutomationObserver
     private static class Panel
     {
         public static readonly ObjectWrapper SubmenusWrapper = new(SubmenusTreePath);
-
         public static readonly ObjectWrapper Slot0 = new(ResearchPanelDownPath + "/researchSlot0");
-
         public static readonly ObjectWrapper Slot1 = new(ResearchPanelDownPath + "/researchSlot1");
-
         public static readonly ObjectWrapper SelectResearch = new(SelectResearchTablePath);
     }
 
@@ -106,7 +99,6 @@ internal class FirestoneResearchAutomation : AutomationObserver
             new(JoinPath(ResearchPanelDownPath, "researchSlot1/container/claimButton"));
 
         public static readonly ButtonWrapper Close = new(MissionCloseButton);
-
         public static readonly ButtonWrapper StartResearch = new(PopupActivateButton);
     }
 }

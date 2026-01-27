@@ -13,10 +13,7 @@ public class OracleRitualsAutomation : AutomationObserver
 
     public override string SectionTitle => "Oracle Rituals";
 
-    public override bool ShouldExecute()
-    {
-        return base.ShouldExecute() && Buttons.Notification.IsActive();
-    }
+    public override bool ShouldExecute() => base.ShouldExecute() && Buttons.Notification.IsActive();
 
     public override IEnumerator OnNotificationTriggered()
     {
@@ -41,18 +38,18 @@ public class OracleRitualsAutomation : AutomationObserver
     {
         RitualsCache.Clear();
 
-        var ritualRoot = Panel.OracleRitualGrid.Transform;
-        if (ritualRoot == null) return;
+        var ritualRoot = Panel.OracleRitualGrid;
+        if (!ritualRoot.Exists()) return;
 
-        for (var i = 0; i < ritualRoot.childCount; i++)
+        var rituals = ritualRoot.GetChildren();
+        foreach (var ritual in rituals)
         {
-            var ritual = ritualRoot.GetChild(i);
-            if (ritual == null || !ritual.gameObject.activeSelf || ritual.Find("locked").gameObject.activeSelf ||
-                ritual.Find("claimedObj").gameObject.activeSelf) continue;
+            if (ritual.IsActive() || ritual.Find("locked").IsActive() ||
+                ritual.Find("claimedObj").IsActive()) continue;
 
-            var nodeName = ritual.name;
-            var ready = ritual.Find("startButton").gameObject.activeSelf;
-            var claimable = ritual.Find("claimButton").gameObject.activeSelf;
+            var nodeName = ritual.Name;
+            var ready = ritual.Find("startButton").IsActive();
+            var claimable = ritual.Find("claimButton").IsActive();
 
             RitualsCache.Add(new Ritual(nodeName, ready, claimable));
         }
@@ -78,14 +75,12 @@ public class OracleRitualsAutomation : AutomationObserver
     private static class Buttons
     {
         public static readonly ButtonWrapper Notification = new(OracleRitualNotification);
-
         public static readonly ButtonWrapper CloseRituals = new(CloseButton);
     }
 
     private static class Panel
     {
         public static readonly ObjectWrapper OraclePanel = new(MenuOracle);
-
         public static readonly ObjectWrapper OracleRitualGrid = new(RitualGrid);
     }
 }
