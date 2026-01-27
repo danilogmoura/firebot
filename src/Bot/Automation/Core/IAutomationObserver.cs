@@ -12,14 +12,14 @@ public abstract class AutomationObserver
     private MelonPreferences_Entry<bool> _enabledEntry;
     private double _nextExecutionTime = -1;
 
-    public abstract string SectionTitle { get; }
+    public virtual string SectionTitle => StringUtils.Humanize(GetType().Name);
 
     public string SectionId => SectionTitle.ToLower().Replace(" ", "_");
 
     public bool IsEnabled => _enabledEntry != null && _enabledEntry.Value;
 
-    // We define 50 as the default "middle ground".
-    // Virtual allows child classes to override it if they want.
+    // Lower numeric values indicate higher priority (0 = highest, 100 = lowest).
+    // Virtual allows derived classes to override it if they want.
     public virtual int Priority => 50;
 
     public void InitializeConfig(string filePath)
@@ -49,7 +49,7 @@ public abstract class AutomationObserver
         if (DebugMode)
         {
             var t = TimeSpan.FromSeconds(secondsRemaining);
-            var formatted = string.Format("{0:D2}h {1:D2}m {2:D2}s", t.Hours, t.Minutes, t.Seconds);
+            var formatted = $"{t.Hours:D2}h {t.Minutes:D2}m {t.Seconds:D2}s";
             LogDebug($"Next execution scheduled in {formatted} ({secondsRemaining}s) (when the UI timer reaches zero)");
         }
     }
