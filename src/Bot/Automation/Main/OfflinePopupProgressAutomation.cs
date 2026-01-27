@@ -5,7 +5,7 @@ using static Firebot.Utils.Paths.BattleRoot;
 
 namespace Firebot.Bot.Automation.Main;
 
-internal class OfflineProgressAutomation : AutomationObserver
+internal class OfflinePopupProgressAutomation : AutomationObserver
 {
     private static readonly ObjectWrapper Popup = new(OfflineProgressPopup);
     private static readonly ButtonWrapper ClaimButton = new(OfflineProgressPopupClaimButton);
