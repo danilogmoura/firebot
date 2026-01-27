@@ -25,7 +25,7 @@ internal class ButtonWrapper : ComponentWrapper<Button>
             ComponentCached.Select();
             ComponentCached.onClick.Invoke();
 
-            LogManager.Debug(ObjectName, $"Clicked button at path: {_path}");
+            LogManager.Debug(ObjectName, $"Clicked button at path: {Path}");
             return true;
         });
 

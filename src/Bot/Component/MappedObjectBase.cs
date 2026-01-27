@@ -8,12 +8,12 @@ namespace Firebot.Bot.Component;
 
 internal abstract class MappedObjectBase
 {
-    protected readonly string _path;
+    protected readonly string Path;
     private Transform _cachedTransform;
 
     protected MappedObjectBase(string path)
     {
-        _path = path;
+        Path = path;
     }
 
     protected virtual string ObjectName => GetType().Name;
@@ -30,18 +30,18 @@ internal abstract class MappedObjectBase
     private void FindAndCacheTransform() =>
         ExecuteSafe(() =>
         {
-            if (string.IsNullOrEmpty(_path)) return;
-            var rootObj = UnityGameObject.Find(_path.Split('/')[0]);
+            if (string.IsNullOrEmpty(Path)) return;
+            var rootObj = UnityGameObject.Find(Path.Split('/')[0]);
 
             if (rootObj == null)
-                throw new InvalidOperationException($"[MapError] {ObjectName}: Root not found for {_path}");
+                throw new InvalidOperationException($"[MapError] {ObjectName}: Root not found for {Path}");
 
-            _cachedTransform = !_path.Contains('/')
+            _cachedTransform = !Path.Contains('/')
                 ? rootObj.transform
-                : rootObj.transform.Find(_path.Substring(_path.IndexOf('/') + 1));
+                : rootObj.transform.Find(Path.Substring(Path.IndexOf('/') + 1));
 
             if (_cachedTransform != null)
-                LogManager.Debug("MapSuccess", $"{ObjectName}: Cached {_path}");
+                LogManager.Debug("MapSuccess", $"{ObjectName}: Cached {Path}");
         });
 
     protected void ExecuteSafe(Action action, [CallerMemberName] string actionName = null)
