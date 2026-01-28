@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using Firebot.Bot.Automation.Core;
-using Firebot.Bot.Component;
+using Firebot.Bot.Components.Wrappers;
 using static Firebot.Utils.Paths.FirestoneResearch;
 using static Firebot.Utils.StringUtils;
 

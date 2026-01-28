@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using Firebot.Bot.Automation.Core;
-using Firebot.Bot.Component;
+using Firebot.Bot.Components.Wrappers;
 using Firebot.Core;
 using UnityEngine;
 using static Firebot.Utils.Paths.GuardianTraining;

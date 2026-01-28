@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Firebot.Bot.Automation.Core;
-using Firebot.Bot.Component;
+using Firebot.Bot.Components.Wrappers;
 using static Firebot.Utils.Paths.OracleRituals;
 using static Firebot.Utils.StringUtils;
 

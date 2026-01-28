@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Firebot.Bot.Automation.Core;
-using Firebot.Bot.Component;
-using Firebot.Bot.Component.TextMeshPro;
+using Firebot.Bot.Components.TMProComponents;
+using Firebot.Bot.Components.Wrappers;
 using UnityEngine;
 using static Firebot.Core.BotSettings;
 using static Firebot.Utils.Paths;

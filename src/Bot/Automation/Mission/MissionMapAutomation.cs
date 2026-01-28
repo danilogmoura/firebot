@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using Firebot.Bot.Automation.Core;
-using Firebot.Bot.Component;
-using Firebot.Bot.Component.TextMeshPro;
+using Firebot.Bot.Components;
+using Firebot.Bot.Components.TMProComponents;
+using Firebot.Bot.Components.UI;
+using Firebot.Bot.Components.Wrappers;
 using Firebot.Core;
 using UnityEngine;
 using static System.Int32;

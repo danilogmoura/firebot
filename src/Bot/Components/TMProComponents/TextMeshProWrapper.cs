@@ -1,4 +1,4 @@
-﻿namespace Firebot.Bot.Component.TextMeshPro;
+﻿namespace Firebot.Bot.Components.TMProComponents;
 
 internal class TextMeshProWrapper : BaseTextWrapper<Il2CppTMPro.TextMeshPro>
 {

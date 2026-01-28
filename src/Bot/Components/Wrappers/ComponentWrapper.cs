@@ -1,4 +1,6 @@
-﻿namespace Firebot.Bot.Component;
+﻿using Firebot.Bot.Components.Base;
+
+namespace Firebot.Bot.Components.Wrappers;
 
 internal abstract class ComponentWrapper<T> : MappedObjectBase where T : UnityEngine.Component
 {

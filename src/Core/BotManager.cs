@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 using Firebot.Bot.Automation.Core;
-using Firebot.Bot.Component.TextMeshPro;
+using Firebot.Bot.Components.TMProComponents;
 using Firebot.Utils;
 using MelonLoader;
 using UnityEngine;

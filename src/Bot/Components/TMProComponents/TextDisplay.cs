@@ -1,9 +1,10 @@
 ﻿using System;
+using Firebot.Bot.Components.Base;
 using Firebot.Utils;
 using Il2CppTMPro;
 using UnityEngine;
 
-namespace Firebot.Bot.Component.TextMeshPro;
+namespace Firebot.Bot.Components.TMProComponents;
 
 /// <summary>
 ///     TextDisplay provides a unified interface for interacting with both TextMeshProUGUI and TextMeshPro components in

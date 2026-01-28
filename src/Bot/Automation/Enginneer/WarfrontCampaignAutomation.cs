@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using Firebot.Bot.Automation.Core;
-using Firebot.Bot.Component;
-using Firebot.Bot.Component.TextMeshPro;
+using Firebot.Bot.Components.TMProComponents;
+using Firebot.Bot.Components.Wrappers;
 using static Firebot.Utils.Paths.WarfrontCampaign;
 
 namespace Firebot.Bot.Automation.Enginneer;

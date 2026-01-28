@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using static Firebot.Utils.StringUtils;
 
-namespace Firebot.Bot.Component;
+namespace Firebot.Bot.Components.Wrappers;
 
 internal class TransformWrapper : ComponentWrapper<Transform>
 {

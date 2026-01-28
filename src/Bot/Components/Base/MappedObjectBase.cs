@@ -4,7 +4,7 @@ using UnityEngine;
 using Logger = Firebot.Utils.Logger;
 using UnityGameObject = UnityEngine.GameObject;
 
-namespace Firebot.Bot.Component;
+namespace Firebot.Bot.Components.Base;
 
 internal abstract class MappedObjectBase
 {

@@ -1,7 +1,8 @@
-﻿using Il2CppTMPro;
+﻿using Firebot.Bot.Components.Wrappers;
+using Il2CppTMPro;
 using UniverseLib.Utility;
 
-namespace Firebot.Bot.Component.TextMeshPro;
+namespace Firebot.Bot.Components.TMProComponents;
 
 internal class BaseTextWrapper<T> : ComponentWrapper<T> where T : TMP_Text
 {

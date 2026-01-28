@@ -4,7 +4,7 @@ using Firebot.Core;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Firebot.Bot.Component;
+namespace Firebot.Bot.Components.Wrappers;
 
 internal class ButtonWrapper : ComponentWrapper<Button>
 {
