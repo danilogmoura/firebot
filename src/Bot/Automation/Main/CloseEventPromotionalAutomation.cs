@@ -40,11 +40,11 @@ public class CloseEventPromotionalAutomation : AutomationObserver
             var popupPath = JoinPath(EventsPopupPath, eventName);
             var popup = new PopupWrapper(popupPath);
 
-            Log.Debug($"Event: {eventName} ({popup.TitleText.Text})");
+            log.Debug($"Event: {eventName} ({popup.TitleText.Text})");
 
             if (!popup.IsActive()) continue;
 
-            Log.Info($"Target event found: {eventName}. Closing and disabling automation.");
+            log.Info($"Target event found: {eventName}. Closing and disabling automation.");
 
             yield return popup.CloseButton.Click();
         }

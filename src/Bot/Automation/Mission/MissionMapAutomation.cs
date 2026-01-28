@@ -65,7 +65,7 @@ internal class MissionMapAutomation : AutomationObserver
             foreach (var mission in missions.Where(mission => mission.IsActive()))
             {
                 _missionCache.Add(new Mission(region.Name, mission.Name));
-                Log.Debug($" Found mission: {region.Name} - {mission.Name}");
+                log.Debug($" Found mission: {region.Name} - {mission.Name}");
             }
         }
     }

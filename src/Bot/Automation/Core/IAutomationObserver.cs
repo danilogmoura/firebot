@@ -10,7 +10,7 @@ namespace Firebot.Bot.Automation.Core;
 
 public abstract class AutomationObserver
 {
-    protected readonly Logger Log;
+    protected readonly Logger log;
 
     private MelonPreferences_Entry<bool> _enabledEntry;
     private double _nextExecutionTime = -1;
@@ -18,7 +18,7 @@ public abstract class AutomationObserver
     protected AutomationObserver()
     {
         var className = GetType().Name;
-        Log = new Logger(className);
+        log = new Logger(className);
         SectionTitle = StringUtils.Humanize(className);
     }
 
@@ -61,7 +61,7 @@ public abstract class AutomationObserver
         {
             var t = TimeSpan.FromSeconds(secondsRemaining);
             var formatted = $"{t.Hours:D2}h {t.Minutes:D2}m {t.Seconds:D2}s";
-            Log.Debug(
+            log.Debug(
                 $"Next execution scheduled in {formatted} ({secondsRemaining}s) (when the UI timer reaches zero)");
         }
     }
