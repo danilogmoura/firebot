@@ -34,6 +34,8 @@ internal class FirestoneResearchAutomation : AutomationObserver
 
             foreach (var slot in slots)
             {
+                if (!Panel.SelectResearch.IsActive()) break;
+
                 var activeSlot = slot.ExecuteSafe(() =>
                 {
                     if (!slot.IsActive()) return false;
@@ -49,10 +51,13 @@ internal class FirestoneResearchAutomation : AutomationObserver
                 if (!activeSlot) continue;
                 yield return OpenPopup(JoinPath(SubmenusTreePath, tree.Name, slot.Name));
 
-                if (Panel.SubmenusWrapper.IsActive() && Buttons.StartResearch.IsInteractable())
-                    yield return Buttons.StartResearch.Click();
+                if (!Panel.SubmenusWrapper.IsActive() || !Buttons.StartResearch.IsInteractable()) continue;
+
+                yield return Buttons.StartResearch.Click();
+                log.Debug($"Started research for slot {slot.Name}.");
             }
         }
+
         yield return Buttons.Close.Click();
     }
 
@@ -66,6 +71,11 @@ internal class FirestoneResearchAutomation : AutomationObserver
     private static class Panel
     {
         public static readonly ObjectWrapper SubmenusWrapper = new(SubmenusTreePath);
+
+        //menusRoot/menuCanvasParent/SafeArea/menuCanvas/menus/Library/submenus/firestoneResearch/researchScrollView/viewport/content/submenus
+        //menusRoot/menuCanvasParent/SafeArea/menuCanvas/menus/Library/submenus/firestoneResearch/
+        //menusRoot/menuCanvasParent/SafeArea/menuCanvas/menus/Library/submenus/firestoneResearch/researchPanel/selectResearchTable
+        //menusRoot/menuCanvasParent/SafeArea/menuCanvas/menus/Library/submenus/firestoneResearch/researchPanel/selectResearchTable
         public static readonly ObjectWrapper Slot0 = new(ResearchPanelDownPath + "/researchSlot0");
         public static readonly ObjectWrapper Slot1 = new(ResearchPanelDownPath + "/researchSlot1");
         public static readonly ObjectWrapper SelectResearch = new(SelectResearchTablePath);
