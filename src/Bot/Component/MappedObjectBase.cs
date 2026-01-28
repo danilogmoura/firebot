@@ -46,7 +46,7 @@ internal abstract class MappedObjectBase
             if (_cachedTransform != null) Log.Debug($"Cached {Path}");
         });
 
-    protected void ExecuteSafe(Action action, [CallerMemberName] string actionName = null)
+    public void ExecuteSafe(Action action, [CallerMemberName] string actionName = null)
     {
         try
         {
@@ -59,7 +59,7 @@ internal abstract class MappedObjectBase
         }
     }
 
-    protected T ExecuteSafe<T>(Func<T> func, T defaultValue = default, [CallerMemberName] string actionName = "")
+    public T ExecuteSafe<T>(Func<T> func, T defaultValue = default, [CallerMemberName] string actionName = "")
     {
         try
         {
