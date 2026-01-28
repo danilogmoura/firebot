@@ -14,6 +14,9 @@ public abstract class Paths
 
     public const string EventsPopupPath = MenuBase + "/events";
 
+    public const string CharacterLevelPath =
+        "battleRoot/battleMain/battleCanvas/SafeArea/topLeftSideUI/playerAvatar/characterLevelBg/characterLevel";
+
     internal static class Engineer
     {
         public const string EngineerGridNotification = NotificationsGrid + "/Engineer";
