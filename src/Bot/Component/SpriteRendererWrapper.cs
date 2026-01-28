@@ -10,8 +10,8 @@ namespace Firebot.Bot.Component
 
         public bool Enabled()
         {
-            return ComponentCached != null && ComponentCached.enabled && ComponentCached.gameObject.activeSelf &&
-                   ComponentCached.sprite != null;
+            return Component != null && Component.enabled && Component.gameObject.activeSelf &&
+                   Component.sprite != null;
         }
     }
 }

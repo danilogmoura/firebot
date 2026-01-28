@@ -11,13 +11,13 @@ namespace Firebot.Bot.Component
 
         public void OnClick()
         {
-            if (ComponentCached == null) return;
+            if (Component == null) return;
 
             var fakeEvent = new PointerEventData(EventSystem.current)
             {
                 button = PointerEventData.InputButton.Left
             };
-            ComponentCached.OnPointerClick(fakeEvent);
+            Component.OnPointerClick(fakeEvent);
         }
     }
 }

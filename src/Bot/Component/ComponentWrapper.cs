@@ -6,7 +6,7 @@ internal abstract class ComponentWrapper<T> : MappedObjectBase where T : UnityEn
 
     protected ComponentWrapper(string path) : base(path) { }
 
-    protected T ComponentCached =>
+    public T Component =>
         ExecuteSafe(() =>
         {
             if (_componentCached != null) return _componentCached;
@@ -18,7 +18,7 @@ internal abstract class ComponentWrapper<T> : MappedObjectBase where T : UnityEn
             return _componentCached;
         });
 
-    public override bool Exists() => ComponentCached != null;
+    public override bool Exists() => Component != null;
 
-    public override bool IsActive() => ComponentCached != null && ComponentCached.gameObject.activeInHierarchy;
+    public override bool IsActive() => Component != null && Component.gameObject.activeInHierarchy;
 }

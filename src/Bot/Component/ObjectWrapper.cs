@@ -23,7 +23,7 @@ internal class ObjectWrapper : ComponentWrapper<Transform>
 
     public ObjectWrapper Find(string path) => ExecuteSafe(() =>
     {
-        var transform = ComponentCached.Find(path);
+        var transform = Component.Find(path);
         if (transform == null) throw new InvalidOperationException("Child not found: " + path);
         return new ObjectWrapper(JoinPath(Path, path));
     });

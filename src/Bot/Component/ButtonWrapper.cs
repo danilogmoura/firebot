@@ -10,7 +10,7 @@ internal class ButtonWrapper : ComponentWrapper<Button>
 {
     public ButtonWrapper(string path) : base(path) { }
 
-    public bool IsInteractable() => IsActive() && ComponentCached.enabled && ComponentCached.interactable;
+    public bool IsInteractable() => IsActive() && Component.enabled && Component.interactable;
 
     public IEnumerator Click() => Click(BotSettings.InteractionDelay);
 
@@ -21,8 +21,8 @@ internal class ButtonWrapper : ComponentWrapper<Button>
             if (!IsInteractable())
                 throw new InvalidOperationException("Button is not interactable.");
 
-            ComponentCached.Select();
-            ComponentCached.onClick.Invoke();
+            Component.Select();
+            Component.onClick.Invoke();
 
             Log.Debug($"Clicked button at path: {Path}");
             return true;
