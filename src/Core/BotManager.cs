@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using Firebot.Bot.Automation.Core;
+using Firebot.Bot.Component.TextMeshPro;
+using Firebot.Utils;
 using MelonLoader;
 using UnityEngine;
 using Logger = Firebot.Utils.Logger;
@@ -11,7 +13,10 @@ public static class BotManager
 {
     private static readonly Logger Log = new(nameof(BotManager));
 
+    private static TextUI _statusColor;
+
     private static Coroutine _botLoop;
+
     public static bool IsRunning { get; private set; }
 
     public static void Start(float delay = 0f)
@@ -19,6 +24,7 @@ public static class BotManager
         if (IsRunning) return;
 
         IsRunning = true;
+        ToggleStatusColor();
         _botLoop = MelonCoroutines.Start(BotRoutine(delay)) as Coroutine;
 
         Log.Info(delay > 0
@@ -31,9 +37,9 @@ public static class BotManager
         if (!IsRunning) return;
 
         IsRunning = false;
+        ToggleStatusColor();
         if (_botLoop != null) MelonCoroutines.Stop(_botLoop);
         _botLoop = null;
-
         Log.Info("Bot stopped.");
     }
 
@@ -54,5 +60,12 @@ public static class BotManager
 
             yield return new WaitForSeconds(BotSettings.ScanInterval);
         }
+    }
+
+    private static void ToggleStatusColor()
+    {
+        _statusColor ??= new TextUI(Paths.CharacterLevelPath);
+        if (IsRunning) _statusColor.SetOutline(Color.green);
+        else _statusColor.RemoveOutline();
     }
 }
