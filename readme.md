@@ -1,6 +1,5 @@
 # Firebot
 
-
 Firebot is a bot designed for the game Firestone Idle RPG. This bot aims to enhance the gaming experience by automating various tasks and providing useful features for players.
 
 ## About
@@ -38,7 +37,7 @@ By default, press **F7** to start or stop the bot during gameplay.
 ## Installation (From Source)
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/firebot.git
+   git clone [https://github.com/yourusername/firebot.git](https://github.com/yourusername/firebot.git)
    ```
 2. Navigate to the project directory:
    ```bash
@@ -49,12 +48,11 @@ By default, press **F7** to start or stop the bot during gameplay.
     - By default, the path is set to `C:\Program Files (x86)\Steam\Firestone` (Windows). If your game is installed elsewhere, change the `<GameRoot>` property in this file to the correct path.
     - You can also set the environment variable `COMMON_DIR` to override the base directory. In this case, the game path will be `$(COMMON_DIR)\Firestone`.
       - Example:
-         ```xml
-         <GameRoot>C:\Program Files (x86)\Steam\Firestone</GameRoot>
-         ```
+          ```xml
+          <GameRoot>C:\Program Files (x86)\Steam\Firestone</GameRoot>
+          ```
 
 4. Build the project using your preferred method (e.g., Visual Studio, command line).
-
 
 
 ## CONFIG:
@@ -138,21 +136,41 @@ enabled = true
 # Enables or disables the Warfront Campaign Scrolls automation module.
 # When disabled, this module will be ignored during the execution loop.
 enabled = true
-
-
 ```
 
+---
+
+## 🗺️ Roadmap & Next Steps
+
+Current version: **v0.2.0-Alpha**.
+The short-term focus is on stabilizing the core execution and expanding automation for new mechanics.
+
+### 📦 v0.2.1 - Stability & Observability (Next)
+*Focus on "housekeeping". Improving the handler and logs is a prerequisite for bug-free new automations.*
+- [ ] **Core:** Refactoring and improved control of the `AutomationHandler`.
+- [ ] **Debug:** Implementation of full log traceability (to ease error identification in new features).
+
+### 🎁 v0.2.2 - Rewards & Customization
+*A quick release focused on daily routines and giving control to the user.*
+- [ ] **Feature:** Daily Rewards automation.
+- [ ] **Logic:** Implementation of a configurable priority system for the **Mission Map**.
+- [ ] **Optimization:** Restructuring of the **Firestone Tree** logic with added priority choices.
+
+### 🧪 v0.3.0 - Gameplay Expansion (Feature Update)
+*The big feature jump, utilizing the new structure created in previous versions.*
+- [ ] **Feature:** Alchemist automation.
+- [ ] **Feature:** Liberation automation.
+
+### 🔮 Future Plans (v0.4.0+)
+- [ ] **UI:** Full in-game configuration interface (No more `.cfg` files needed).
+---
 
 ## Contributing
 Contributions are welcome! Please submit a pull request or open an issue for suggestions or improvements.
 
-
-
 ## Disclaimer: Not a Cheat
 
 Firebot **is not a cheat**. It does not modify game resources, grant unfair advantages, interfere with server logic, or alter game files. The bot only automates actions that a player could perform manually, without bypassing any security or protection mechanisms of the game.
-
-
 
 ## Technical Details
 
