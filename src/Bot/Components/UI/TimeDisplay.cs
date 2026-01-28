@@ -1,12 +1,17 @@
 ﻿using System;
 using Firebot.Bot.Components.TMProComponents;
-using MelonLoader;
+using Firebot.Utils;
 
 namespace Firebot.Bot.Components.UI;
 
 internal class TimeDisplay : TextMeshProWrapper
 {
-    public TimeDisplay(string path) : base(path) { }
+    private readonly Logger _log;
+
+    public TimeDisplay(string path, Logger log) : base(path)
+    {
+        _log = log;
+    }
 
     public int ParseToSeconds()
     {
@@ -48,7 +53,7 @@ internal class TimeDisplay : TextMeshProWrapper
         }
         catch (Exception ex)
         {
-            MelonLogger.Warning($"[TimeParser] Erro ao converter '{timeString}': {ex.Message}");
+            _log.Warning($"[TimeParser] Erro ao converter '{timeString}': {ex.Message}");
             return 0;
         }
     }
