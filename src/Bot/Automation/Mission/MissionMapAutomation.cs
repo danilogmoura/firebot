@@ -38,7 +38,7 @@ internal class MissionMapAutomation : AutomationObserver
         foreach (var mission in _missionCache.Where(mission => mission.IsActive && mission.IsClaim))
             yield return mission.Click();
 
-        foreach (var mission in _missionCache.OrderByDescending(mission => mission.Time)
+        foreach (var mission in _missionCache.OrderBy(mission => mission.Time)
                      .ToList()
                      .Where(mission => !mission.IsActive && GetSquadCount() > 0))
         {
