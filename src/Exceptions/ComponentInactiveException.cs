@@ -3,7 +3,7 @@ using System;
 namespace Firebot.Exceptions;
 
 /// <summary>
-///     Exceção lançada quando um componente existe, mas não está ativo na hierarquia.
+///     Exception thrown when a component exists but is not active in the hierarchy.
 /// </summary>
 public class ComponentInactiveException : FirebotException
 {
