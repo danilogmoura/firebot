@@ -16,7 +16,7 @@ public class ComponentNotFoundException : FirebotException
     /// <param name="contextInfo">Additional context for debugging/logging.</param>
     /// <param name="correlationId">Unique identifier for traceability.</param>
     /// <param name="inner">The inner exception, if any.</param>
-    public ComponentNotFoundException(string componentName, string contextInfo = null, string correlationId = null,
+    public ComponentNotFoundException(string componentName, string correlationId = null, string contextInfo = null,
         Exception inner = null)
         : base($"Component '{componentName}' was not found. See details for context.", contextInfo, correlationId,
             inner)
@@ -32,8 +32,9 @@ public class ComponentNotFoundException : FirebotException
     /// <param name="contextInfo">Additional context for debugging/logging.</param>
     /// <param name="correlationId">Unique identifier for traceability.</param>
     /// <param name="inner">The inner exception, if any.</param>
-    public ComponentNotFoundException(string componentName, string message, string contextInfo = null,
-        string correlationId = null, Exception inner = null)
+    public ComponentNotFoundException(string componentName, string message, string correlationId = null,
+        string contextInfo = null,
+        Exception inner = null)
         : base(message, contextInfo, correlationId, inner)
     {
         ComponentName = componentName;
