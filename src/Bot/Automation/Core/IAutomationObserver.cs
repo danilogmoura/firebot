@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using Firebot.Core;
 using Firebot.Utils;
 using MelonLoader;
 using UnityEngine;
@@ -10,15 +11,14 @@ namespace Firebot.Bot.Automation.Core;
 
 public abstract class AutomationObserver
 {
-    protected readonly Logger log;
-
     private MelonPreferences_Entry<bool> _enabledEntry;
     private double _nextExecutionTime = -1;
+    protected Logger Log;
 
     protected AutomationObserver()
     {
         var className = GetType().Name;
-        log = new Logger(className);
+        Log = new Logger(className);
         SectionTitle = StringUtils.Humanize(className);
     }
 
@@ -61,8 +61,8 @@ public abstract class AutomationObserver
         {
             var t = TimeSpan.FromSeconds(secondsRemaining);
             var formatted = $"{t.Hours:D2}h {t.Minutes:D2}m {t.Seconds:D2}s";
-            log.Debug(
-                $"Next execution scheduled in {formatted} ({secondsRemaining}s) (when the UI timer reaches zero)");
+            Log.Debug($"Next execution scheduled in {formatted} ({secondsRemaining}s) (when the UI timer reaches zero)",
+                BotContext.CorrelationId);
         }
     }
 
@@ -75,12 +75,15 @@ public abstract class AutomationObserver
 
     public virtual bool ShouldExecute()
     {
-        if (!IsEnabled) return false;
+        Log.Debug($"IsEnabled={IsEnabled}, NextExecutionTime={_nextExecutionTime}", BotContext.CorrelationId);
 
+        if (!IsEnabled) return false;
         if (_nextExecutionTime < 0) return true;
 
         return Time.time >= _nextExecutionTime;
     }
 
     public abstract IEnumerator OnNotificationTriggered();
+
+    public void StartNewExecutionCycle() => BotContext.CorrelationId = $"{GetType().Name}";
 }

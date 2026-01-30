@@ -1,6 +1,4 @@
-﻿using System;
-using Firebot.Bot.Components.TMProComponents;
-using MelonLoader;
+﻿using Firebot.Bot.Components.TMProComponents;
 
 namespace Firebot.Bot.Components.UI;
 
@@ -8,14 +6,12 @@ internal class TimeDisplay : TextMeshProWrapper
 {
     public TimeDisplay(string path) : base(path) { }
 
-    public int ParseToSeconds()
-    {
-        var timeString = Text;
-
-        if (string.IsNullOrEmpty(timeString)) return 0;
-
-        try
+    public int ParseToSeconds() =>
+        RunSafe(() =>
         {
+            var timeString = Text;
+            if (string.IsNullOrEmpty(timeString)) return 0;
+
             var cleanTime = timeString.Trim();
             var parts = cleanTime.Split(':');
 
@@ -45,11 +41,5 @@ internal class TimeDisplay : TextMeshProWrapper
             }
 
             return totalSeconds;
-        }
-        catch (Exception ex)
-        {
-            MelonLogger.Warning($"[TimeParser] Erro ao converter '{timeString}': {ex.Message}");
-            return 0;
-        }
-    }
+        }, defaultValue: 0);
 }

@@ -8,14 +8,15 @@ internal class MapMissionInteractionWrapper : ComponentWrapper<MapMissionInterac
 {
     public MapMissionInteractionWrapper(string path) : base(path) { }
 
-    public void OnClick()
-    {
-        if (Component == null) return;
-
-        var fakeEvent = new PointerEventData(EventSystem.current)
+    public void OnClick() =>
+        RunSafe(() =>
         {
-            button = PointerEventData.InputButton.Left
-        };
-        Component.OnPointerClick(fakeEvent);
-    }
+            if (Component == null) return;
+
+            var fakeEvent = new PointerEventData(EventSystem.current)
+            {
+                button = PointerEventData.InputButton.Left
+            };
+            Component.OnPointerClick(fakeEvent);
+        });
 }

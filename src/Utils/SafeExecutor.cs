@@ -20,8 +20,8 @@ public static class SafeExecutor
         }
         catch (Exception ex)
         {
-            logger.Error(ex, correlationId, contextInfo ?? $"Action={actionName}");
-            logger.Debug(ex, correlationId, contextInfo ?? $"Action={actionName}");
+            logger.Error(ex, correlationId, contextInfo, actionName);
+            logger.Debug(ex.Message, correlationId, contextInfo, actionName);
         }
     }
 
@@ -37,8 +37,8 @@ public static class SafeExecutor
         }
         catch (Exception ex)
         {
-            logger.Error(ex, correlationId, contextInfo ?? $"Func={actionName}");
-            logger.Debug(ex, correlationId, contextInfo ?? $"Func={actionName}");
+            logger.Error(ex, correlationId, contextInfo, actionName);
+            logger.Debug(ex.Message, correlationId, contextInfo, actionName);
             return defaultValue;
         }
     }

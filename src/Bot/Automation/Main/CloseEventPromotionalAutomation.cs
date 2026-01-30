@@ -5,6 +5,7 @@ using Firebot.Bot.Automation.Core;
 using Firebot.Bot.Components.TMProComponents;
 using Firebot.Bot.Components.Wrappers;
 using UnityEngine;
+using static Firebot.Core.BotContext;
 using static Firebot.Core.BotSettings;
 using static Firebot.Utils.Paths;
 using static Firebot.Utils.StringUtils;
@@ -40,11 +41,11 @@ public class CloseEventPromotionalAutomation : AutomationObserver
             var popupPath = JoinPath(EventsPopupPath, eventName);
             var popup = new PopupWrapper(popupPath);
 
-            log.Debug($"Event: {eventName} ({popup.TitleText.Text})");
+            Log.Debug($"Event: {eventName} ({popup.TitleText.Text})", CorrelationId);
 
             if (!popup.IsActive()) continue;
 
-            log.Info($"Target event found: {eventName}. Closing and disabling automation.");
+            Log.Debug($"Target event found: {eventName}. Closing and disabling automation.", CorrelationId);
 
             yield return popup.CloseButton.Click();
         }

@@ -9,6 +9,7 @@ using Firebot.Bot.Components.Wrappers;
 using Firebot.Core;
 using UnityEngine;
 using static System.Int32;
+using static Firebot.Core.BotContext;
 using static Firebot.Utils.Paths.Missions;
 using static Firebot.Utils.StringUtils;
 
@@ -22,8 +23,6 @@ internal class MissionMapAutomation : AutomationObserver
 
     public override IEnumerator OnNotificationTriggered()
     {
-        if (!Buttons.Notification.IsActive()) yield break;
-
         yield return Buttons.Notification.Click();
 
         UpdateMissionCache();
@@ -67,7 +66,7 @@ internal class MissionMapAutomation : AutomationObserver
             foreach (var mission in missions.Where(mission => mission.IsActive()))
             {
                 _missionCache.Add(new Mission(region.Name, mission.Name));
-                log.Debug($" Found mission: {region.Name} - {mission.Name}");
+                Log.Debug($" Found mission: {region.Name} - {mission.Name}", CorrelationId);
             }
         }
     }

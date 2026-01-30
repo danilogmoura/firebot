@@ -15,9 +15,6 @@ public class OracleRitualsAutomation : AutomationObserver
 
     public override IEnumerator OnNotificationTriggered()
     {
-        if (!Buttons.Notification.IsInteractable())
-            yield break;
-
         yield return Buttons.Notification.Click();
 
         if (!Panel.OraclePanel.IsActive()) yield break;

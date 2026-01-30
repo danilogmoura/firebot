@@ -7,18 +7,12 @@ namespace Firebot.Bot.Automation.GuildShop;
 
 public class FreePickaxesAutomation : AutomationObserver
 {
-    public override string SectionTitle => "Free Pickaxes";
     public override int Priority => 25;
 
-    public override bool ShouldExecute()
-    {
-        return base.ShouldExecute() && Button.Notification.IsActive();
-    }
+    public override bool ShouldExecute() => base.ShouldExecute() && Button.Notification.IsActive();
 
     public override IEnumerator OnNotificationTriggered()
     {
-        if (!Button.Notification.IsInteractable()) yield break;
-
         yield return Button.Notification.Click();
 
         if (Button.FreePickaxeItem.IsInteractable())

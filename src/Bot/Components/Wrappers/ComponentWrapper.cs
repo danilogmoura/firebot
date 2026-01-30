@@ -1,31 +1,29 @@
 ﻿using Firebot.Bot.Components.Base;
+using Firebot.Exceptions;
+using UnityEngine;
 
 namespace Firebot.Bot.Components.Wrappers;
 
-internal abstract class ComponentWrapper<T> : MappedObjectBase where T : UnityEngine.Component
+internal abstract class ComponentWrapper<T> : MappedObjectBase where T : Component
 {
     private T _componentCached;
 
     protected ComponentWrapper(string path) : base(path) { }
 
     public T Component =>
-        ExecuteSafe(() =>
+        RunSafe(() =>
         {
             if (_componentCached != null) return _componentCached;
 
             var transform = CachedTransform;
-            if (transform == null) return null;
+            if (transform == null || !CachedTransform.TryGetComponent(out _componentCached))
+                throw new ComponentNotFoundException(typeof(T).Name, correlationId: CorrelationId, contextInfo: Path);
 
-            CachedTransform.TryGetComponent(out _componentCached);
             return _componentCached;
         });
 
-    public override bool Exists() => Component != null;
+    public override bool Exists() => RunSafe(() => Component != null);
 
-    public override bool IsActive()
-    {
-        var active = Component != null && Component.gameObject.activeInHierarchy;
-        Log.Debug($"Component {typeof(T).Name} is active: {active}");
-        return active;
-    }
+    public override bool IsActive() => RunSafe(() => Component != null && Component.gameObject.activeInHierarchy,
+        defaultValue: false);
 }

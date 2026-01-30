@@ -9,7 +9,7 @@ internal class TransformWrapper : ComponentWrapper<Transform>
 {
     public TransformWrapper(string path) : base(path) { }
 
-    public List<TransformWrapper> GetChildren() => ExecuteSafe(() =>
+    public List<TransformWrapper> GetChildren() => RunSafe(() =>
     {
         var children = new List<TransformWrapper>();
         for (var i = 0; i < ChildCount(); i++)
@@ -21,7 +21,7 @@ internal class TransformWrapper : ComponentWrapper<Transform>
         return children;
     });
 
-    public TransformWrapper Find(string path) => ExecuteSafe(() =>
+    public TransformWrapper Find(string path) => RunSafe(() =>
     {
         var transform = Component.Find(path);
         if (transform == null) throw new InvalidOperationException("Child not found: " + path);

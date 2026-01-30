@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using Firebot.Utils;
 using MelonLoader;
+using static Firebot.Core.BotContext;
 
 namespace Firebot.Bot.Automation.Core;
 
@@ -33,7 +34,7 @@ public static class AutomationHandler
             .ToList();
 
         foreach (var type in automationTypes)
-            try
+            SafeExecutor.Run(() =>
             {
                 var instance = (AutomationObserver)Activator.CreateInstance(type);
 
@@ -41,14 +42,9 @@ public static class AutomationHandler
                 {
                     instance.InitializeConfig(configFilePath);
                     Observers.Add(instance);
+                    Log.Debug($"[Automation] Loaded {type.Name}");
                 }
-
-                Log.Debug($"[AutoRegister] Loaded & Configured: {type.Name}");
-            }
-            catch (Exception ex)
-            {
-                MelonLogger.Error($"Failed to load {type.Name}: {ex.Message}");
-            }
+            }, Log, contextInfo: type.Name);
 
         Observers = Observers.OrderBy(o => o.Priority).ToList();
         Log.Info($"[AutoRegister] {Observers.Count} automations loaded and ordered.");
@@ -57,9 +53,13 @@ public static class AutomationHandler
     public static void CheckNotifications()
     {
         if (_isProcessing) return;
-
-        foreach (var observer in Observers.Where(observer => observer.IsEnabled && observer.ShouldExecute()))
+        foreach (var observer in Observers)
         {
+            observer.StartNewExecutionCycle();
+            if (!observer.IsEnabled || !observer.ShouldExecute())
+                continue;
+
+            Log.Debug($"[Orchestrator] Starting cycle: {CorrelationId}", CorrelationId);
             MelonCoroutines.Start(ExecuteRoutine(observer));
             break;
         }

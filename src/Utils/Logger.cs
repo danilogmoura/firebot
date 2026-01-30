@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
+using System.Text;
 using Firebot.Core;
 using Firebot.Exceptions;
 using MelonLoader;
@@ -16,74 +18,57 @@ public class Logger
         _logTag = logTag;
     }
 
-    private static string ComposeMessage(string level, string logTag, string message, string correlationId = null,
-        string contextInfo = null, DateTime? timestamp = null)
+    private static string FormatLog(string message, string correlationId, string contextInfo, string action)
     {
-        var ts = (timestamp ?? DateTime.UtcNow).ToString("O");
-        var json =
-            $"{{\"message\":\"{EscapeJson(message)}\",\"correlationId\":\"{EscapeJson(correlationId ?? "-")}\",\"context\":\"{EscapeJson(contextInfo ?? "-")}\",\"timestamp\":\"{ts}\"}}";
-        return $"[{level}] [{logTag}] {json}";
+        // Se tudo for nulo, retorna a mensagem limpa
+        if (string.IsNullOrEmpty(correlationId) && string.IsNullOrEmpty(contextInfo) && string.IsNullOrEmpty(action))
+            return message;
+
+        var sb = new StringBuilder(message);
+        sb.Append(" |");
+
+        if (!string.IsNullOrEmpty(correlationId))
+            sb.Append($" [Src: {correlationId}]");
+
+        if (!string.IsNullOrEmpty(contextInfo))
+            sb.Append($" [Ctx: {contextInfo}]");
+
+        if (!string.IsNullOrEmpty(action))
+            sb.Append($" [Act: {action}]");
+
+        return sb.ToString();
     }
 
-    private static string EscapeJson(string value) => string.IsNullOrEmpty(value)
-        ? ""
-        : value.Replace("\\", "\\\\").Replace("\"", "\\\"").Replace("\n", "\\n").Replace("\r", "\\r");
+    public void Info(string message, string correlationId = null, string contextInfo = null,
+        [CallerMemberName] string action = null)
+        => MelonLogger.Msg(TextColor, $"[{_logTag}] {FormatLog(message, correlationId, contextInfo, action)}");
 
-    // Info
-    public void Info(string message, string correlationId = null, string contextInfo = null)
-        => MelonLogger.Msg(TextColor, ComposeMessage("INFO", _logTag, message, correlationId, contextInfo));
+    public void Warning(string message, string correlationId = null, string contextInfo = null,
+        [CallerMemberName] string action = null)
+        => MelonLogger.Warning($"[{_logTag}] {FormatLog(message, correlationId, contextInfo, action)}");
 
-    public void Info(Exception ex, string correlationId = null, string contextInfo = null)
-        => MelonLogger.Msg(TextColor, ComposeExceptionMessage("INFO", ex, correlationId, contextInfo));
+    public void Error(string message, string correlationId = null, string contextInfo = null,
+        [CallerMemberName] string action = null)
+        => MelonLogger.Error($"[{_logTag}] {FormatLog(message, correlationId, contextInfo, action)}");
 
-    // Warning
-    public void Warning(string message, string correlationId = null, string contextInfo = null)
-        => MelonLogger.Warning(ComposeMessage("WARN", _logTag, message, correlationId, contextInfo));
-
-    public void Warning(Exception ex, string correlationId = null, string contextInfo = null)
-        => MelonLogger.Warning(ComposeExceptionMessage("WARN", ex, correlationId, contextInfo));
-
-    // Error
-    public void Error(string message, string correlationId = null, string contextInfo = null)
-        => MelonLogger.Error(ComposeMessage("ERROR", _logTag, message, correlationId, contextInfo));
-
-    public void Error(Exception ex, string correlationId = null, string contextInfo = null)
-        => MelonLogger.Error(ComposeExceptionMessage("ERROR", ex, correlationId, contextInfo));
-
-    // Debug
-    public void Debug(string message, string correlationId = null, string contextInfo = null)
+    public void Debug(string message, string correlationId = null, string contextInfo = null,
+        [CallerMemberName] string action = null)
     {
         if (BotSettings.DebugMode || MelonDebug.IsEnabled())
-            MelonLogger.Msg(DebugColor, ComposeMessage("DEBUG", _logTag, message, correlationId, contextInfo));
+            MelonLogger.Msg(DebugColor,
+                $"[DEBUG] [{_logTag}] {FormatLog(message, correlationId, contextInfo, action)}");
     }
 
-    public void Debug(Exception ex, string correlationId = null, string contextInfo = null)
+    public void Error(Exception ex, string correlationId = null, string contextInfo = null,
+        [CallerMemberName] string action = null)
     {
-        if (BotSettings.DebugMode || MelonDebug.IsEnabled())
-            MelonLogger.Msg(DebugColor, ComposeExceptionMessage("DEBUG", ex, correlationId, contextInfo));
-    }
-
-    // Structured event log (for automation/component events)
-    public void Event(string eventName, string result, string correlationId = null, string contextInfo = null)
-    {
-        var msg = $"[Event] Name={eventName} | Result={result}";
-        MelonLogger.Msg(TextColor, ComposeMessage("EVENT", _logTag, msg, correlationId, contextInfo));
-    }
-
-    // Helper for exception logging
-    private string ComposeExceptionMessage(string level, Exception ex, string correlationId, string contextInfo)
-    {
-        var msg = $"{ex.GetType().Name}: {ex.Message}\n{ex.StackTrace}";
-        DateTime? ts = null;
         if (ex is FirebotException fbEx)
         {
             correlationId ??= fbEx.CorrelationId;
             contextInfo ??= fbEx.ContextInfo;
-            ts = fbEx.Timestamp;
-            msg +=
-                $"\n[FirebotException] correlationId={fbEx.CorrelationId} | context={fbEx.ContextInfo} | timestamp={fbEx.Timestamp:O}";
         }
 
-        return ComposeMessage(level, _logTag, msg, correlationId, contextInfo, ts);
+        var msg = $"{ex.GetType().Name}: {ex.Message}";
+        MelonLogger.Error($"[{_logTag}] {FormatLog(msg, correlationId, contextInfo, action)}\n{ex.StackTrace}");
     }
 }

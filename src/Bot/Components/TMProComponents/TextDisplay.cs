@@ -1,65 +1,56 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using Firebot.Bot.Components.Base;
+using Firebot.Core;
 using Firebot.Utils;
 using Il2CppTMPro;
 using UnityEngine;
+using Logger = Firebot.Utils.Logger;
 
 namespace Firebot.Bot.Components.TMProComponents;
 
-/// <summary>
-///     TextDisplay provides a unified interface for interacting with both TextMeshProUGUI and TextMeshPro components in
-///     Unity.
-///     It automatically detects the correct component type at runtime and exposes common operations such as reading text,
-///     setting color, manipulating outline, and parsing time values from the text content.
-/// </summary>
 public class TextDisplay
 {
     private readonly string _path;
+    private readonly Logger Log;
     private MappedObjectBase _activeWrapper;
 
-    /// <summary>
-    ///     Initializes a new instance of the TextDisplay class for the given UI path.
-    /// </summary>
-    /// <param name="path">The UI path to the text component.</param>
     public TextDisplay(string path)
     {
         _path = path;
+        Log = new Logger(nameof(TextDisplay));
     }
 
     /// <summary>
-    ///     Parses the text content as a TimeSpan using the TimeParser utility.
+    ///     Parses the text content as a TimeSpan safely. Returns TimeSpan.Zero on error.
     /// </summary>
-    public TimeSpan Time => TimeParser.Parse(Text);
+    public TimeSpan Time => RunSafe(() => TimeParser.Parse(Text), TimeSpan.Zero);
 
-    /// <summary>
-    ///     Gets the total seconds represented by the parsed TimeSpan from the text content.
-    /// </summary>
     public double TotalSeconds => Time.TotalSeconds;
 
     /// <summary>
-    ///     Gets the current text content from the active text component (TextMeshProUGUI or TextMeshPro).
+    ///     Gets the current text content safely. Returns string.Empty on error.
     /// </summary>
-    public string Text
+    public string Text => RunSafe(() =>
     {
-        get
+        EnsureComponentInitialized();
+        if (_activeWrapper == null) return string.Empty;
+
+        return _activeWrapper switch
         {
-            EnsureComponentInitialized();
-            if (_activeWrapper == null) return string.Empty;
+            TextMeshProUGUIWrapper ugui => ugui.Text,
+            TextMeshProWrapper tmpro => tmpro.Text,
+            _ => string.Empty
+        };
+    }, string.Empty);
 
-            return _activeWrapper switch
-            {
-                TextMeshProUGUIWrapper ugui => ugui.Text,
-                TextMeshProWrapper tmpro => tmpro.Text,
-                _ => string.Empty
-            };
-        }
-    }
+    private void RunSafe(Action action, [CallerMemberName] string actionName = null) =>
+        SafeExecutor.Run(action, Log, BotContext.CorrelationId, _path, actionName);
 
-    /// <summary>
-    ///     Sets the color of the text in the active text component.
-    /// </summary>
-    /// <param name="newColor">The new color to apply.</param>
-    public void SetColor(Color newColor)
+    private T RunSafe<T>(Func<T> func, T defaultValue = default, [CallerMemberName] string actionName = null) =>
+        SafeExecutor.Run(func, Log, BotContext.CorrelationId, _path, defaultValue, actionName);
+
+    public void SetColor(Color newColor) => RunSafe(() =>
     {
         EnsureComponentInitialized();
         if (_activeWrapper == null) return;
@@ -68,14 +59,9 @@ public class TextDisplay
             ugui.Component.color = newColor;
         else if (_activeWrapper is TextMeshProWrapper tmpro && tmpro.Exists())
             tmpro.Component.color = newColor;
-    }
+    });
 
-    /// <summary>
-    ///     Enables and sets the outline color and thickness for the text.
-    /// </summary>
-    /// <param name="color">The outline color.</param>
-    /// <param name="thickness">The outline thickness (default is 0.2f).</param>
-    public void SetOutline(Color color, float thickness = 0.2f)
+    public void SetOutline(Color color, float thickness = 0.2f) => RunSafe(() =>
     {
         EnsureComponentInitialized();
         if (_activeWrapper == null) return;
@@ -95,12 +81,9 @@ public class TextDisplay
             textComponent.UpdateMeshPadding();
             textComponent.SetAllDirty();
         }
-    }
+    });
 
-    /// <summary>
-    ///     Removes the outline effect from the text.
-    /// </summary>
-    public void RemoveOutline()
+    public void RemoveOutline() => RunSafe(() =>
     {
         EnsureComponentInitialized();
         if (_activeWrapper == null) return;
@@ -119,11 +102,8 @@ public class TextDisplay
             textComponent.UpdateMeshPadding();
             textComponent.SetAllDirty();
         }
-    }
+    });
 
-    /// <summary>
-    ///     Ensures the correct text component wrapper is initialized and active for the given path.
-    /// </summary>
     private void EnsureComponentInitialized()
     {
         if (_activeWrapper != null && _activeWrapper.IsActive()) return;

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using Firebot.Bot.Automation.Core;
 using Firebot.Bot.Components.Wrappers;
+using static Firebot.Core.BotContext;
 using static Firebot.Utils.Paths.FirestoneResearch;
 using static Firebot.Utils.StringUtils;
 
@@ -12,8 +13,6 @@ internal class FirestoneResearchAutomation : AutomationObserver
 
     public override IEnumerator OnNotificationTriggered()
     {
-        if (!Buttons.Notification.IsInteractable()) yield break;
-
         yield return Buttons.Notification.Click();
 
         if (!Panel.SubmenusWrapper.IsActive() && Panel.SelectResearch.IsActive())
@@ -36,7 +35,7 @@ internal class FirestoneResearchAutomation : AutomationObserver
             {
                 if (!Panel.SelectResearch.IsActive()) break;
 
-                var activeSlot = slot.ExecuteSafe(() =>
+                var activeSlot = slot.RunSafe(() =>
                 {
                     if (!slot.IsActive()) return false;
                     if (!slot.Name.StartsWith("firestoneResearch")) return false;
@@ -44,9 +43,12 @@ internal class FirestoneResearchAutomation : AutomationObserver
                     var bar = slot.Find("progressBarBg");
                     var glow = slot.Find("glow");
 
-                    log.Debug($"Checking slot {slot.Name}: Bar active = {bar.IsActive()}, Glow active = {glow.IsActive()}");
+                    Log.Debug(
+                        $"Checking slot {slot.Name}: Bar active = {bar.IsActive()}, Glow active = {glow.IsActive()}",
+                        CorrelationId);
+
                     return bar.IsActive() && !glow.IsActive();
-                });
+                }, defaultValue: false);
 
                 if (!activeSlot) continue;
                 yield return OpenPopup(JoinPath(SubmenusTreePath, tree.Name, slot.Name));
@@ -54,7 +56,7 @@ internal class FirestoneResearchAutomation : AutomationObserver
                 if (!Panel.SubmenusWrapper.IsActive() || !Buttons.StartResearch.IsInteractable()) continue;
 
                 yield return Buttons.StartResearch.Click();
-                log.Debug($"Started research for slot {slot.Name}.");
+                Log.Info($"Research started: {slot.Name}", CorrelationId);
             }
         }
 

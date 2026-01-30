@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using Firebot.Core;
+using Firebot.Exceptions;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,24 +10,23 @@ internal class ButtonWrapper : ComponentWrapper<Button>
 {
     public ButtonWrapper(string path) : base(path) { }
 
-    public bool IsInteractable() => IsActive() && Component.enabled && Component.interactable;
+    public bool IsInteractable() => RunSafe(() => IsActive() && Component.enabled && Component.interactable);
 
     public IEnumerator Click() => Click(BotSettings.InteractionDelay);
 
     private IEnumerator Click(float delay)
     {
-        var success = ExecuteSafe(() =>
+        RunSafe(() =>
         {
             if (!IsInteractable())
-                throw new InvalidOperationException("Button is not interactable.");
+                throw new EventException("Button not interactable", contextInfo: Path, correlationId: CorrelationId);
 
             Component.Select();
             Component.onClick.Invoke();
 
-            Log.Debug($"Clicked button at path: {Path}");
-            return true;
-        });
+            Log.Debug("Click executed", CorrelationId);
+        }, CorrelationId);
 
-        if (success && delay > 0) yield return new WaitForSeconds(delay);
+        if (delay > 0) yield return new WaitForSeconds(delay);
     }
 }

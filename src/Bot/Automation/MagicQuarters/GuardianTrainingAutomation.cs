@@ -10,8 +10,6 @@ namespace Firebot.Bot.Automation.MagicQuarters;
 
 public class GuardianTrainingAutomation : AutomationObserver
 {
-    public override string SectionTitle => "Guardian Training";
-
     public override bool ShouldExecute() => base.ShouldExecute() && Button.Notification.IsActive();
 
     public override IEnumerator OnNotificationTriggered()

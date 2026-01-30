@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
+using Firebot.Core;
+using Firebot.Exceptions;
+using Firebot.Utils;
 using UnityEngine;
 using Logger = Firebot.Utils.Logger;
 using UnityGameObject = UnityEngine.GameObject;
@@ -14,11 +17,16 @@ internal abstract class MappedObjectBase
 
     protected MappedObjectBase(string path)
     {
+        if (string.IsNullOrEmpty(path))
+            throw new PathNotFoundException(CorrelationId);
+
         Path = path;
         Log = new Logger(GetType().Name);
     }
 
-    public string Name => ExecuteSafe(() => CachedTransform?.name ?? string.Empty);
+    protected static string CorrelationId => BotContext.CorrelationId;
+
+    public string Name => RunSafe(() => CachedTransform.name);
 
     protected Transform CachedTransform
     {
@@ -30,56 +38,40 @@ internal abstract class MappedObjectBase
     }
 
     private void FindAndCacheTransform() =>
-        ExecuteSafe(() =>
+        RunSafe(() =>
         {
-            if (string.IsNullOrEmpty(Path)) return;
-            var rootObj = UnityGameObject.Find(Path.Split('/')[0]);
+            var slashIndex = Path.IndexOf('/');
+
+            var rootName = slashIndex == -1 ? Path : Path[..slashIndex];
+            var rootObj = UnityGameObject.Find(rootName);
 
             if (rootObj == null)
-                throw new InvalidOperationException(
-                    $"[MapError] {nameof(MappedObjectBase)}: Root not found for {Path}");
+                throw new ComponentNotFoundException(rootName, contextInfo: Path, correlationId: CorrelationId);
 
-            _cachedTransform = !Path.Contains('/')
+            _cachedTransform = slashIndex == -1
                 ? rootObj.transform
-                : rootObj.transform.Find(Path.Substring(Path.IndexOf('/') + 1));
+                : rootObj.transform.Find(Path[(slashIndex + 1)..]);
 
-            if (_cachedTransform != null) Log.Debug($"Cached {Path}");
-        });
+            if (_cachedTransform == null)
+                throw new ComponentNotFoundException(rootName,
+                    message: $"Root '{rootName}' found, but child at path '{Path}' is missing.", contextInfo: Path);
+        }, CorrelationId);
 
-    public void ExecuteSafe(Action action, [CallerMemberName] string actionName = null)
-    {
-        try
-        {
-            action?.Invoke();
-        }
-        catch (Exception ex)
-        {
-            Log.Error($"Exception in '{actionName}': {ex.Message}");
-            Log.Debug($"Full StackTrace for {actionName}:\n{ex}");
-        }
-    }
+    public void RunSafe(Action action, string contextInfo = null, [CallerMemberName] string actionName = null) =>
+        SafeExecutor.Run(action, Log, CorrelationId, contextInfo ?? Path, actionName);
 
-    public T ExecuteSafe<T>(Func<T> func, T defaultValue = default, [CallerMemberName] string actionName = "")
-    {
-        try
-        {
-            return func();
-        }
-        catch (Exception ex)
-        {
-            Log.Error($"Exception in '{actionName}': {ex.Message}");
-            Log.Debug($"Full StackTrace for {actionName}:\n{ex}");
-            return defaultValue;
-        }
-    }
+    public T RunSafe<T>(Func<T> func, string contextInfo = null, T defaultValue = default,
+        [CallerMemberName] string actionName = null) =>
+        SafeExecutor.Run(func, Log, CorrelationId, contextInfo ?? Path, defaultValue, actionName);
 
-    public virtual bool Exists() => CachedTransform != null;
+    public virtual bool Exists() => RunSafe(() => CachedTransform != null, defaultValue: false);
 
-    public virtual bool IsActive() => Exists() && CachedTransform.gameObject.activeInHierarchy;
+    public virtual bool IsActive() =>
+        RunSafe(() => Exists() && CachedTransform.gameObject.activeInHierarchy, defaultValue: false);
 
-    public bool HasChildren() => IsActive() && ExecuteSafe(() => CachedTransform.childCount > 0);
+    public bool HasChildren() => RunSafe(() => CachedTransform.childCount > 0, defaultValue: false);
 
-    public int ChildCount() => Exists() ? CachedTransform.childCount : 0;
+    public int ChildCount() => RunSafe(() => CachedTransform.childCount, defaultValue: 0);
 
-    public Transform GetChild(int level) => ExecuteSafe(() => CachedTransform?.GetChild(level));
+    public Transform GetChild(int level) => RunSafe(() => CachedTransform.GetChild(level));
 }

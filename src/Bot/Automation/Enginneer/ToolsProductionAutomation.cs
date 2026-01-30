@@ -7,17 +7,10 @@ namespace Firebot.Bot.Automation.Enginneer;
 
 public class ToolsProductionAutomation : AutomationObserver
 {
-    public override string SectionTitle => "Tools Production";
-
-    public override bool ShouldExecute()
-    {
-        return base.ShouldExecute() && Button.Notification.IsActive();
-    }
+    public override bool ShouldExecute() => base.ShouldExecute() && Button.Notification.IsActive();
 
     public override IEnumerator OnNotificationTriggered()
     {
-        if (!Button.Notification.IsActive()) yield break;
-
         yield return Button.Notification.Click();
 
         var caimToolsButton = new ButtonWrapper(ClaimToolsButton);

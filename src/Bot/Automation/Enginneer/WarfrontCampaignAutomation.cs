@@ -8,8 +8,6 @@ namespace Firebot.Bot.Automation.Enginneer;
 
 public class WarfrontCampaignAutomation : AutomationObserver
 {
-    public override string SectionTitle => "Warfront Campaign Scrolls";
-
     public override bool ShouldExecute() => base.ShouldExecute() && Button.Notification.IsActive();
 
     public override IEnumerator OnNotificationTriggered()
