@@ -61,7 +61,7 @@ public class GameElement
         }
     }
 
-    public bool IsVisible() => Root != null && Root.gameObject.activeInHierarchy;
+    public virtual bool IsVisible() => Root != null && Root.gameObject.activeInHierarchy;
 
     public bool TryGetComponent<T>(out T component) where T : Component
     {

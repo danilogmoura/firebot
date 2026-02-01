@@ -59,30 +59,20 @@
         </Reference>
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Automation\Core\" />
-      <Folder Include="Automation\Enginneer\" />
-      <Folder Include="Automation\Expedition\" />
-      <Folder Include="Automation\GuildShop\" />
-      <Folder Include="Automation\Library\" />
-      <Folder Include="Automation\MagicQuarters\" />
-      <Folder Include="Automation\Main\" />
-      <Folder Include="Automation\MapMissions\" />
-      <Folder Include="Automation\Oracle\" />
-      <Folder Include="Core\Diagnostics\" />
-    </ItemGroup>
 
     <Target Name="PostBuild" AfterTargets="Build">
-        <Message Text="[Deploy] Starting file distribution..." Importance="High"/>
+        <Message Text="[Deploy] Starting file distribution..." Importance="High" />
 
         <Copy SourceFiles="$(TargetDir)$(AssemblyName).dll"
-              DestinationFolder="$(ModsDir)"
-              Condition="Exists('$(ModsDir)')"
-              SkipUnchangedFiles="true"/>
+            DestinationFolder="$(ModsDir)"
+            Condition="Exists('$(ModsDir)')"
+            SkipUnchangedFiles="true" />
 
-        <Message Text="➡ Mod deployed to: $(ModsDir)" Importance="High" Condition="Exists('$(ModsDir)')"/>
+        <Message Text="➡ Mod deployed to: $(ModsDir)" Importance="High"
+            Condition="Exists('$(ModsDir)')" />
 
-        <Warning Text="Target directories not found. Check your Directory.Build.props path settings."
-                 Condition="!Exists('$(ModsDir)')"/>
+        <Warning
+            Text="Target directories not found. Check your Directory.Build.props path settings."
+            Condition="!Exists('$(ModsDir)')" />
     </Target>
 </Project>

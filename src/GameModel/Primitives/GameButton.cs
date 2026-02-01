@@ -14,6 +14,14 @@ public class GameButton : GameElement
         _cachedTransform = root;
     }
 
+    public override bool IsVisible()
+    {
+        if (!base.IsVisible()) return false;
+        return !TryGetComponent(out CanvasGroup group) || group.alpha != 0;
+    }
+
+    public bool IsClickable() => IsVisible() && Root.TryGetComponent(out Button button) && button.interactable;
+
     public void Click()
     {
         if (!IsVisible())
