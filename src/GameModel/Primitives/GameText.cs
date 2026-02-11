@@ -1,6 +1,6 @@
 ﻿using System;
 using Firebot.GameModel.Base;
-using Firebot.Old.Core;
+using Firebot.Utilities;
 using Il2CppTMPro;
 using UnityEngine;
 
@@ -27,9 +27,7 @@ public class GameText : GameElement
 
     public string Text => GetParsedText();
 
-    public TimeSpan Time => TimeParser.Parse(Text);
-
-    public double TotalSeconds => Time.TotalSeconds;
+    public DateTime Time => TimeParser.ParseExpectedTime(Text, 30);
 
     public string GetParsedText()
     {

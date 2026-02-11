@@ -52,7 +52,7 @@ public static class BotManager
 
         IsRunning = true;
         _botRoutineHandle = MelonCoroutines.Start(BotSchedulerLoop());
-        Logger.Debug($"[Firebot] Started. Tasks loaded: {_tasks.Count}");
+        Logger.Debug($"Started. Tasks loaded: {_tasks.Count}");
     }
 
     public static void Stop()
@@ -82,13 +82,12 @@ public static class BotManager
             {
                 var sw = Stopwatch.StartNew();
                 Logger.Info(
-                    $"[TASK START] Starting task: {readyTask.SectionTitle} (priority: {readyTask.Priority}, nextRun: {readyTask.NextRunTime:O})");
+                    $"[TASK START] {readyTask.SectionTitle} (priority: {readyTask.Priority}, nextRun: {readyTask.NextRunTime:O})");
 
                 yield return readyTask.Execute();
 
                 sw.Stop();
-                Logger.Info(
-                    $"[TASK END] {readyTask.SectionTitle} finished in {sw.Elapsed.TotalSeconds:F2}s");
+                Logger.Info($"[TASK END] {readyTask.SectionTitle} finished in {sw.Elapsed.TotalSeconds:F2}s");
             }
 
             yield return new WaitForSeconds(1f);

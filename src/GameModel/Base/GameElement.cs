@@ -1,9 +1,10 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using Logger = Firebot.Core.Logger;
 
 namespace Firebot.GameModel.Base;
 
-public abstract class GameElement
+public class GameElement
 {
     protected Transform CachedTransform;
 
@@ -38,9 +39,7 @@ public abstract class GameElement
         get
         {
             if (CachedTransform != null && CachedTransform.gameObject == null) CachedTransform = null;
-
             if (CachedTransform != null) return CachedTransform;
-
             if (string.IsNullOrEmpty(Path) && Parent == null) return null;
 
             if (Parent != null)
@@ -68,9 +67,21 @@ public abstract class GameElement
 
     public void Refresh() => CachedTransform = null;
 
-    protected bool TryGetComponent<T>(out T component) where T : Component
+    public bool TryGetComponent<T>(out T component) where T : Component
     {
         component = null;
         return Root != null && Root.TryGetComponent(out component);
+    }
+
+    public List<GameElement> GetChildren()
+    {
+        var children = new List<GameElement>();
+        for (var i = 0; i < Root.childCount; i++)
+        {
+            var child = Root.GetChild(i);
+            children.Add(new GameElement(child.name, this));
+        }
+
+        return children;
     }
 }

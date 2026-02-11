@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 using Firebot.Old.Core;
+using Firebot.Utilities;
 using Il2CppTMPro;
 using UnityEngine;
 using Logger = Firebot.Old.Core.Logger;

@@ -54,9 +54,6 @@
         <Reference Include="UnityEngine.UIModule">
             <HintPath>$(Il2CppAssembliesDir)\UnityEngine.UIModule.dll</HintPath>
         </Reference>
-        <Reference Include="UniverseLib.MelonLoader.IL2CPP">
-            <HintPath>$(UniverseLibDir)\UniverseLib.MelonLoader.IL2CPP.dll</HintPath>
-        </Reference>
     </ItemGroup>
 
     <Target Name="PostBuild" AfterTargets="Build">

@@ -6,20 +6,18 @@ namespace Firebot.Core;
 
 public static class Watchdog
 {
-    private static readonly string[] _nuisancePaths =
+    private static readonly string[] NuisancePaths =
     {
-        // "Canvas/Popups/DailyReward/ClaimBtn",
-        // "Canvas/Popups/SpecialOffer/CloseBtn",
-        // "Canvas/Popups/OfflineGains/OkBtn",
-        // "Canvas/Errors/ReconnectBtn"
+        "menusRoot/menuCanvasParent/SafeArea/menuCanvas/popups/OfflineProgress/bg/collectButton",
+        "menusRoot/menuCanvasParent/SafeArea/menuCanvas/events/AnniversaryEventPromotional/bg/closeButton",
+        "menusRoot/menuCanvasParent/SafeArea/menuCanvas/events/LoveIsInTheAirPromotion/bg/closeButton"
     };
 
     public static IEnumerator ForceClearAll()
     {
-        // Tenta fechar coisas por 3 segundos seguidos
         for (var i = 0; i < 3; i++)
         {
-            foreach (var path in _nuisancePaths)
+            foreach (var path in NuisancePaths)
             {
                 var btn = new GameButton(path);
 

@@ -4,12 +4,15 @@ using MelonLoader;
 using UnityEngine;
 using Main = Firebot.Main;
 
-[assembly: MelonInfo(typeof(Main), "Firebot", "0.2.0", "danilogmoura", "https://github.com/danilogmoura/firebot")]
-[assembly: MelonGame("Holgersvig", "Firestone Idle RPG")] // Ajuste conforme o jogo real
+[assembly: MelonInfo(typeof(Main), "Firebot", "0.1.0", "danilogmoura", "https://github.com/danilogmoura/firebot")]
+[assembly: MelonGame]
+
 [assembly: MelonColor(255, 255, 0, 255)]
 [assembly: MelonAuthorColor(255, 0, 255, 0)]
+
 [assembly: AssemblyTitle("Firebot")]
-[assembly: AssemblyDescription("Automation bot for Firestone Idle RPG.")]
+[assembly:
+    AssemblyDescription("A bot for automating tasks using MelonLoader.")]
 [assembly: AssemblyCopyright("Created by danilogmoura")]
 
 namespace Firebot;

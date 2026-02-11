@@ -12,7 +12,7 @@ public abstract class BotTask
 
     public virtual string SectionTitle => Humanize(GetType().Name);
 
-    public DateTime NextRunTime { get; set; } = DateTime.MinValue;
+    public DateTime NextRunTime { get; protected set; } = DateTime.MinValue;
 
     public virtual int Priority => 50;
 
@@ -23,15 +23,15 @@ public abstract class BotTask
         if (_enabledEntry != null) return;
 
         var sectionId = SectionTitle.Replace(" ", "_").ToLowerInvariant();
-        var category = MelonPreferences.CreateCategory(sectionId, $"{SectionTitle} Settings");
-        category.SetFilePath(configPath);
+        _category = MelonPreferences.CreateCategory(sectionId, $"{SectionTitle} Settings");
+        _category.SetFilePath(configPath);
 
-        _enabledEntry = category.CreateEntry("enabled", true, "Enable Module",
+        _enabledEntry = _category.CreateEntry("enabled", true, "Enable Module",
             $"Enables or disables the {SectionTitle} automation module." +
             $"\nWhen disabled, this module will be ignored during the execution loop.");
 
-        OnConfigure(category);
-        category.SaveToFile();
+        OnConfigure(_category);
+        _category.SaveToFile();
 
         OnConfigure(_category);
         _category.SaveToFile();
