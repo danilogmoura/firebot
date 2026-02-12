@@ -2,7 +2,7 @@
 using Firebot.GameModel.Configuration;
 using Firebot.GameModel.Primitives;
 
-namespace Firebot.GameModel.Features.Engineer;
+namespace Firebot.GameModel.Features.Engineer.Tools;
 
 public class GaragePopup : GameElement
 {
