@@ -38,45 +38,63 @@ public static class Paths
 
             public const string MissionRefresh =
                 "/submenus/mapMissionsSubmenu/bottomLeftUI/missionRefreshCanvas/missionRefreshBg/missionRefreshText";
+
+            public const string WarfrontCampaignButton = "/submenuButtons/warfrontCampaignButton";
         }
 
-        public static class ActiveMissions
+        public static class Missions
         {
-            public const string Root = MenusRoottSafeArea + "/menuCanvas/menus/WorldMap";
+            public static class ActiveMissions
+            {
+                public const string Root = MenusRoottSafeArea + "/menuCanvas/menus/WorldMap";
 
-            public const string ActiveMissionsGrid =
-                "/submenus/mapMissionsSubmenu/activeMissionsCanvas/activeMissions/Viewport/grid";
+                public const string ActiveMissionsGrid =
+                    "/submenus/mapMissionsSubmenu/activeMissionsCanvas/activeMissions/Viewport/grid";
 
-            public const string MissionProgress = "/missionProgress/activeMissionProgressText";
+                public const string MissionProgress = "/missionProgress/activeMissionProgressText";
+            }
+
+            public static class Preview
+            {
+                public const string Root = MenusRoottSafeArea + "/menuCanvas/popups/PreviewMission";
+
+                public const string CloseButton = "/bg/closeButton";
+
+                public const string SpeedUpButton = "/bg/managementBg/container/speedUpButton";
+
+                public const string SpeedUpButtonIcon = "/currencyIcon";
+
+                public const string StartMissionButton = "/bg/managementBg/container/startMissionButton";
+
+                public const string MissionProgress =
+                    "/bg/rewardBg/previewMissionTime/previewBar/missionProgress/activeMissionProgressText";
+
+                public const string NotEnoughSquadsText = "/bg/managementBg/previewMissionNotEnoughSquads";
+            }
+
+            public static class MapPin
+            {
+                public const string Root = "menusRoot/mapRoot/mapElements/missions";
+
+                public const string MissionActiveIcon = "/missionActiveIcon";
+
+                public const string MissionTimeRequirement = "/missionBg/missionTimeBg/missionTimeReq";
+
+                public const string CompletedTick = "/missionBg/completedTick";
+            }
         }
 
-        public static class Preview
+        public static class WarfrontCampaign
         {
-            public const string Root = MenusRoottSafeArea + "/menuCanvas/popups/PreviewMission";
+            public static class Loot
+            {
+                public const string Root = MenusRoottSafeArea +
+                                           "/menuCanvas/menus/WorldMap/submenus/warfrontCampaignSubmenu/loot";
 
-            public const string CloseButton = "/bg/closeButton";
+                public const string NextLootTimeLeft = "/nextLootTimeLeft";
 
-            public const string SpeedUpButton = "/bg/managementBg/container/speedUpButton";
-
-            public const string SpeedUpButtonIcon = "/currencyIcon";
-
-            public const string StartMissionButton = "/bg/managementBg/container/startMissionButton";
-
-            public const string MissionProgress =
-                "/bg/rewardBg/previewMissionTime/previewBar/missionProgress/activeMissionProgressText";
-
-            public const string NotEnoughSquadsText = "/bg/managementBg/previewMissionNotEnoughSquads";
-        }
-
-        public static class MapPin
-        {
-            public const string Root = "menusRoot/mapRoot/mapElements/missions";
-
-            public const string MissionActiveIcon = "/missionActiveIcon";
-
-            public const string MissionTimeRequirement = "/missionBg/missionTimeBg/missionTimeReq";
-
-            public const string CompletedTick = "/missionBg/completedTick";
+                public const string ClaimToolsButton = "/claimButton";
+            }
         }
     }
 }

@@ -7,8 +7,8 @@ namespace Firebot.GameModel.Features.MapMissions.Missions;
 
 public class ActiveMissions : GameElement
 {
-    public ActiveMissions() : base(Paths.MapMissions.ActiveMissions.Root +
-                                   Paths.MapMissions.ActiveMissions.ActiveMissionsGrid) { }
+    public ActiveMissions() : base(Paths.MapMissions.Missions.ActiveMissions.Root +
+                                   Paths.MapMissions.Missions.ActiveMissions.ActiveMissionsGrid) { }
 
     public DateTime FindNextRunTime
     {
@@ -21,7 +21,7 @@ public class ActiveMissions : GameElement
             {
                 if (!gameElement.IsVisible()) continue;
 
-                var timer = new GameText(gameElement.Root, Paths.MapMissions.ActiveMissions.MissionProgress);
+                var timer = new GameText(gameElement.Root, Paths.MapMissions.Missions.ActiveMissions.MissionProgress);
                 var missionFinishTime = timer.Time;
 
                 if (missionFinishTime < earliestDate && missionFinishTime > DateTime.Now)
@@ -31,7 +31,7 @@ public class ActiveMissions : GameElement
                 }
             }
 
-            return foundAny ? earliestDate.AddSeconds(30) : DateTime.Now.AddMinutes(1);
+            return foundAny ? earliestDate : DateTime.Now.AddMinutes(1);
         }
     }
 }

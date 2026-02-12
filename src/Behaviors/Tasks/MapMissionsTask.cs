@@ -24,9 +24,8 @@ public class MapMissionsTask : BotTask
         yield return new WaitForSeconds(1f);
 
         var allMissions = ScanMissions();
-
-        var toCollect = allMissions.Where(mission => mission.IsActive).ToList();
-        var toStart = allMissions.Where(m => !m.IsActive).OrderByDescending(m => m.TimeRequired).ToList();
+        var toCollect = allMissions.Where(mission => mission.IsCompleted).ToList();
+        var toStart = allMissions.Where(mission => !mission.IsActive).OrderByDescending(m => m.TimeRequired).ToList();
 
         foreach (var mission in toCollect)
         {
@@ -59,9 +58,8 @@ public class MapMissionsTask : BotTask
         }
 
         allMissions = ScanMissions();
-        var missionHud = new MissionHud();
+        var missionHud = new MapMissionHud();
         NextRunTime = !allMissions.Any() ? missionHud.MissionRefresh.Time : new ActiveMissions().FindNextRunTime;
-
         Logger.Debug($"Found {allMissions.Count} missions, next run time in {NextRunTime}");
 
         missionHud.CloseButton.Click();
@@ -70,7 +68,7 @@ public class MapMissionsTask : BotTask
 
     private static List<MissionPin> ScanMissions()
     {
-        var missionRoot = new BasePage(Paths.MapMissions.MapPin.Root);
+        var missionRoot = new BasePage(Paths.MapMissions.Missions.MapPin.Root);
         var missions = new List<MissionPin>();
 
         foreach (var gameElement in missionRoot.GetChildren())

@@ -6,11 +6,12 @@ namespace Firebot.GameModel.Features.MapMissions.Missions;
 
 public class PreviewMission : GameElement
 {
-    public PreviewMission() : base(Paths.MapMissions.Preview.Root) { }
+    public PreviewMission() : base(Paths.MapMissions.Missions.Preview.Root) { }
 
-    public GameButton CloseButton => new(Paths.MapMissions.Preview.CloseButton, this);
+    public GameButton CloseButton => new(Paths.MapMissions.Missions.Preview.CloseButton, this);
 
-    public GameButton StartMissionButton => new(Paths.MapMissions.Preview.StartMissionButton, this);
+    public GameButton StartMissionButton => new(Paths.MapMissions.Missions.Preview.StartMissionButton, this);
 
-    public bool IsNotEnoughSquads => new BasePage(Paths.MapMissions.Preview.NotEnoughSquadsText, this).IsVisible();
+    public bool IsNotEnoughSquads =>
+        new BasePage(Paths.MapMissions.Missions.Preview.NotEnoughSquadsText, this).IsVisible();
 }

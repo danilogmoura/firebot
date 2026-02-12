@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using Firebot.Behaviors;
@@ -25,17 +26,20 @@ public static class BotManager
 
         var assembly = Assembly.GetExecutingAssembly();
         var taskTypes = assembly.GetTypes()
-            .Where(t => t.Namespace != null && t.Namespace.StartsWith(targetNamespace) &&
-                        t.IsSubclassOf(typeof(BotTask)) && !t.IsAbstract)
+            .Where(task => task.Namespace != null && task.Namespace.StartsWith(targetNamespace) &&
+                           task.IsSubclassOf(typeof(BotTask)) && !task.IsAbstract)
             .ToList();
 
         foreach (var type in taskTypes)
             try
             {
                 var task = (BotTask)Activator.CreateInstance(type);
-                task.InitializeConfig(configPath);
-                _tasks.Add(task);
-                Logger.Debug($"[Loader] Registered task: {task.SectionTitle}");
+                if (task != null)
+                {
+                    task.InitializeConfig(configPath);
+                    _tasks.Add(task);
+                    Logger.Debug($"[Loader] Registered task: {task.SectionTitle}");
+                }
             }
             catch (Exception e)
             {
@@ -65,10 +69,9 @@ public static class BotManager
 
     private static IEnumerator BotSchedulerLoop()
     {
-        var startDelay = BotSettings.StartBotDelay;
-        yield return new WaitForSeconds(startDelay);
+        if (BotSettings.AutoStart) yield return new WaitForSeconds(BotSettings.StartBotDelay);
 
-        Logger.Info("Executando limpeza inicial de Popups...");
+        Logger.Info("Performing initial popup cleanup to ensure a consistent UI state before scheduling tasks...");
         yield return Watchdog.ForceClearAll();
 
         while (IsRunning)
@@ -82,12 +85,13 @@ public static class BotManager
             {
                 var sw = Stopwatch.StartNew();
                 Logger.Info(
-                    $"[TASK START] {readyTask.SectionTitle} (priority: {readyTask.Priority}, nextRun: {readyTask.NextRunTime:O})");
+                    $"[TASK START] {readyTask.SectionTitle} (priority: {readyTask.Priority})");
 
                 yield return readyTask.Execute();
 
                 sw.Stop();
-                Logger.Info($"[TASK END] {readyTask.SectionTitle} finished in {sw.Elapsed.TotalSeconds:F2}s");
+                Logger.Info(
+                    $"[TASK END] {readyTask.SectionTitle} finished in {sw.Elapsed.TotalSeconds:F2}s (nextRun: {readyTask.NextRunTime.ToString("dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture)})");
             }
 
             yield return new WaitForSeconds(1f);
