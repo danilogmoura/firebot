@@ -6,13 +6,13 @@ namespace Firebot.GameModel.Shared;
 
 public class MainHud : GameElement
 {
-    public MainHud() : base(Paths.Hud.Root) { }
+    public MainHud() : base(Paths.MainHud.Root) { }
 
-    public GameButton TownButton => new(Paths.Hud.TownButton, this);
-    public GameButton MapButton => new(Paths.Hud.MapButton, this);
-    public GameButton GuildButton => new(Paths.Hud.GuildButton, this);
-    public GameButton StoreButton => new(Paths.Hud.StoreButton, this);
+    public GameButton TownButton => new(Paths.MainHud.TownButton, this);
+    public GameButton MapButton => new(Paths.MainHud.MapButton, this);
+    public GameButton GuildButton => new(Paths.MainHud.GuildButton, this);
+    public GameButton StoreButton => new(Paths.MainHud.StoreButton, this);
 
-    public GameButton PathOfGloryButton => new(Paths.Hud.PathOfGloryButton, this);
-    public GameButton EventsButton => new(Paths.Hud.EventsButton, this);
+    public GameButton PathOfGloryButton => new(Paths.MainHud.PathOfGloryButton, this);
+    public GameButton EventsButton => new(Paths.MainHud.EventsButton, this);
 }

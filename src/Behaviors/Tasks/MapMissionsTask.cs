@@ -59,7 +59,7 @@ public class MapMissionsTask : BotTask
 
         allMissions = ScanMissions();
         var missionHud = new MapMissionHud();
-        NextRunTime = !allMissions.Any() ? missionHud.MissionRefresh.Time : new ActiveMissions().FindNextRunTime;
+        NextRunTime = !allMissions.Any() ? missionHud.MissionRefresh.Time() : new ActiveMissions().FindNextRunTime;
         Logger.Debug($"Found {allMissions.Count} missions, next run time in {NextRunTime}");
 
         missionHud.CloseButton.Click();

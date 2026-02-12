@@ -11,7 +11,7 @@ public static class Paths
         public const string CloseButton = "/bg/closeButton";
     }
 
-    public static class Hud
+    public static class MainHud
     {
         public const string Root = BattleRootSafeArea;
 
@@ -95,6 +95,26 @@ public static class Paths
 
                 public const string ClaimToolsButton = "/claimButton";
             }
+        }
+    }
+
+    public static class Town
+    {
+        public static class HUD
+        {
+            public const string Root = MenusRoottSafeArea + "/menuCanvas/menus/TownIrongard";
+
+            public const string EngineerButton = "/townBg/parent/engineer";
+
+            public const string MagicQuartersButton = "/townBg/parent/magicQuarters";
+
+            public const string LibraryButton = "/townBg/parent/library";
+
+            public const string AlchemistButton = "/townBg/parent/alchemist";
+
+            public const string OracleButton = "/townBg/parent/oracle";
+
+            public const string CloseButton = "/closeButton";
         }
     }
 }
