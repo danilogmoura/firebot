@@ -1,99 +1,114 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using Firebot.Utilities;
 using UnityEngine;
+using static Firebot.Utilities.StringUtils;
 using Logger = Firebot.Core.Logger;
 
 namespace Firebot.GameModel.Base;
 
 public class GameElement
 {
-    protected Transform CachedTransform;
+    private readonly string _className;
+    private readonly string _path;
 
-    protected GameElement(string path, GameElement parent = null)
+    public GameElement(string path = null, GameElement parent = null, Transform transform = null)
     {
-        Path = path?.Trim('/');
-        Parent = parent;
-    }
+        _className = GetType().Name;
+        _path = path?.Trim('/');
 
-    protected GameElement(Transform root, string path = null)
-    {
-        Path = path?.Trim('/');
-
-        if (root == null)
+        var baseTransform = parent?.Root ?? transform;
+        if (!string.IsNullOrEmpty(_path) && baseTransform != null)
         {
-            Logger.Debug($"Root provided is null. Cannot resolve path '{Path ?? "N/A"}'.");
-            return;
+            var resolved = baseTransform.Find(_path);
+            if (resolved != null)
+                _path = resolved.GetPath();
+            else
+                Debug($"Child transform not found. Parent: {baseTransform.name}, Path: {Ellipsize(_path)}");
+        }
+        else if (string.IsNullOrEmpty(_path) && baseTransform != null)
+        {
+            _path = baseTransform.GetPath();
+            Debug($"Path derived from base transform: {Ellipsize(_path)}");
         }
 
-        CachedTransform = string.IsNullOrEmpty(Path) ? root : root.Find(Path);
+        var source = string.Join(" | ", new[]
+        {
+            baseTransform != null ? $"Parent: {baseTransform.name}" : null,
+            !string.IsNullOrEmpty(_path) ? $"Path: {Ellipsize(_path)}" : null
+        }.Where(s => s != null));
 
-        if (CachedTransform == null)
-            Logger.Debug($"Could not find element at path '{Path}' under provided root '{root.name}'.");
+        Debug($"Initialized {_className} with {source}");
     }
-
-    protected string Path { get; set; }
-
-    protected GameElement Parent { get; }
 
     public Transform Root
     {
         get
         {
-            if (CachedTransform != null && CachedTransform.gameObject == null) CachedTransform = null;
-            if (CachedTransform != null) return CachedTransform;
-            if (string.IsNullOrEmpty(Path) && Parent == null) return null;
-
-            if (Parent != null)
+            if (!string.IsNullOrEmpty(_path))
             {
-                var parentTrans = Parent.Root;
-                if (parentTrans == null)
-                    return null;
+                var resolved = FindAbsolute(_path);
+                if (resolved == null)
+                    Debug($"Absolute path not found: {Ellipsize(_path)}");
 
-                CachedTransform = parentTrans.Find(Path);
-
-                if (CachedTransform == null)
-                    Logger.Debug($"Failed to resolve '{Path}' under parent '{Parent?.Root?.name}'");
-            }
-            else
-            {
-                var obj = GameObject.Find(Path);
-                if (obj != null) CachedTransform = obj.transform;
+                return resolved;
             }
 
-            return CachedTransform;
+            Debug("Root resolution skipped (no parent, no path, no immediate transform)");
+            return null;
         }
+    }
+
+    private static Transform FindAbsolute(string fullPath)
+    {
+        var firstSlash = fullPath.IndexOf('/');
+
+        if (firstSlash == -1)
+            return GameObject.Find(fullPath)?.transform;
+
+        var rootName = fullPath[..firstSlash];
+        var relativePath = fullPath[(firstSlash + 1)..];
+
+        var rootObj = GameObject.Find(rootName);
+        return rootObj != null ? rootObj.transform.Find(relativePath) : null;
     }
 
     public virtual bool IsVisible() => Root != null && Root.gameObject.activeInHierarchy;
 
-    public void Refresh() => CachedTransform = null;
+    public IEnumerable<GameElement> GetChildren()
+    {
+        var currentRoot = Root;
+        if (currentRoot == null)
+        {
+            Debug("GetChildren called but root is null");
+            yield break;
+        }
+
+        foreach (var o in currentRoot)
+        {
+            var child = (Transform)o;
+            yield return new GameElement(transform: child);
+        }
+    }
 
     public bool TryGetComponent<T>(out T component) where T : Component
     {
         component = null;
-        return Root != null && Root.TryGetComponent(out component);
-    }
-
-    public List<GameElement> GetChildrens()
-    {
-        var children = new List<GameElement>();
-        for (var i = 0; i < Root.childCount; i++)
+        var root = Root;
+        if (root == null)
         {
-            var child = Root.GetChild(i);
-            children.Add(new GameElement(child.name, this));
+            Debug($"TryGetComponent<{typeof(T).Name}> failed: root is null");
+            return false;
         }
 
-        return children;
+        var success = root.TryGetComponent(out component);
+        if (!success)
+            Debug($"TryGetComponent<{typeof(T).Name}> failed on: {root.name}");
+
+        return success;
     }
 
-    public IEnumerable<GameElement> GetChildren()
-    {
-        if (Root == null) yield break;
-
-        var count = Root.childCount;
-        for (var i = 0; i < count; i++)
-        {
-            var child = Root.GetChild(i);
-            yield return new GameElement(child);
-        }
-    }
+    protected void Debug(string message, [CallerMemberName] string member = "", [CallerLineNumber] int line = 0)
+        => Logger.Debug($"[{_className}::{member}:{line}] {message}");
 }

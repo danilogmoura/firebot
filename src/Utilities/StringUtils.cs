@@ -13,6 +13,12 @@ public abstract class StringUtils
             (current, child) => $"{current}/{child.TrimStart('/').TrimEnd('/')}");
     }
 
+    public static string Ellipsize(string value, int head = 20, int tail = 20)
+    {
+        if (string.IsNullOrEmpty(value) || value.Length <= head + tail + 3) return value;
+        return value[..head] + "..." + value[^tail..];
+    }
+
     /// <summary>
     ///     Formats a PascalCase string into a human-readable format by inserting spaces
     ///     and removing a specific suffix.
