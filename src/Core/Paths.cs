@@ -53,15 +53,17 @@ public static class Paths
                 public static class MissionsLoc
                 {
                     public const string ActiveGrid = Sub + "/activeMissionsCanvas/activeMissions/Viewport/grid";
-                    public const string ProgressSuffix = "/missionProgress/activeMissionProgressText";
 
                     public static class PreviewLoc
                     {
                         private const string Root = PopupsLoc.Root + "/PreviewMission";
                         public const string Close = Root + "/bg/closeButton";
                         public const string StartBtn = Root + "/bg/managementBg/container/startMissionButton";
-                        public const string SpeedUp = Root + "/bg/managementBg/container/speedUpButton";
                         public const string NotEnoughSquads = Root + "/bg/managementBg/previewMissionNotEnoughSquads";
+
+                        public const string MissionProgress =
+                            Root +
+                            "/bg/rewardBg/previewMissionTime/previewBar/missionProgress/activeMissionProgressText";
                     }
 
                     public static class PinLoc

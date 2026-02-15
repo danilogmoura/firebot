@@ -30,65 +30,68 @@ public class MapMissionsTask : BotTask
     public override IEnumerator Execute()
     {
         yield return MainHUD.MapButton.Click();
-        var allMissions = ScanMissions();
 
-        var toCollect = allMissions.Where(m => m.IsCompleted).ToList();
+        var toCollect = ScanMissions().Where(m => m.IsCompleted).ToList();
         foreach (var mission in toCollect)
-        {
             yield return mission.OnClick();
-            Debug($"[TASK] Collected: {mission.Name}");
-        }
 
-        var pending = allMissions.Where(m => !m.IsActive && !m.IsCompleted);
+        var pending = ScanMissions().Where(mission => !mission.IsActive && !mission.IsCompleted);
         var toStart = IsAscending()
-            ? pending.OrderBy(m => m.TimeRequired).ToList()
+            ? pending.OrderBy(mission => mission.TimeRequired).ToList()
             : pending.OrderByDescending(m => m.TimeRequired).ToList();
         foreach (var mission in toStart)
         {
             yield return mission.OnClick();
 
-            if (PreviewMission.IsNotEnoughSquads)
+            if (MissionPreview.IsNotEnoughSquads)
             {
                 Debug("[TASK] Stopping: No more squads available.");
-                yield return PreviewMission.CloseButton.Click();
+                yield return MissionPreview.CloseButton.Click();
                 break;
             }
 
-            yield return PreviewMission.StartMissionButton.Click();
-            Debug($"[TASK] Started mission: {mission.Name}");
+            yield return MissionPreview.StartMissionButton.Click();
         }
 
-        var activeMissions = new ActiveMissions();
-        if (allMissions.Any(m => m.IsActive))
-            NextRunTime = activeMissions.FindNextRunTime;
-        else
-            NextRunTime = MapMissionHUD.MissionRefresh.Time;
+        DateTime? earliest = null;
+        yield return FindEarliestMissionProgress(value => earliest = value);
+        NextRunTime = earliest ?? MapMissionHUD.MissionRefresh.Time;
 
         yield return MapMissionHUD.CloseButton.Click();
     }
 
-    private List<MissionPin> ScanMissions()
+    private IEnumerable<MissionPin> ScanMissions()
     {
         Debug("[SCAN] Starting Mission Pin discovery...");
-
         var missionRoot = new GameElement(Paths.MenusLoc.CanvasLoc.MapMissionsLoc.MissionsLoc.PinLoc.Root);
-        var missions = new List<MissionPin>();
 
         foreach (var category in missionRoot.GetChildren())
         {
             if (!category.IsVisible()) continue;
-
             foreach (var pinElement in category.GetChildren())
             {
                 if (!pinElement.IsVisible()) continue;
-
-                var missionPin = new MissionPin(parent: pinElement);
-                missions.Add(missionPin);
+                yield return new MissionPin(parent: pinElement);
             }
         }
+    }
 
-        Debug($"[SCAN] Completed. Found {missions.Count} active missions.");
-        return missions;
+    private IEnumerator FindEarliestMissionProgress(Action<DateTime?> setEarliest)
+    {
+        DateTime? earliest = null;
+
+        foreach (var mission in ScanMissions().Where(mission => mission.IsActive))
+        {
+            yield return mission.OnClick();
+
+            var progress = MissionPreview.MissionProgress;
+            if (!earliest.HasValue || progress < earliest.Value)
+                earliest = progress;
+
+            yield return MissionPreview.CloseButton.Click();
+        }
+
+        setEarliest(earliest);
     }
 
     private bool IsAscending()
